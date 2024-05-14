@@ -1,8 +1,4 @@
 
 """
-    ASD challenge program.
-
-    Hugh/Hugo Fisher AKA laranzu
-    hugo.fisher@gmail.com
-    
+    The interesting stuff is in __main__.py
 """

@@ -1,4 +1,12 @@
 
+"""
+    Main program for DNABot, ASD technical challenge program.
+
+    Hugh/Hugo Fisher AKA laranzu
+    Canberra, Australia
+    hugo.fisher@gmail.com
+"""
+
 import sys
 
 from . import config
