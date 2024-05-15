@@ -12,7 +12,9 @@ Written as a Python package, so run with `python -m DNABot` from parent
 directory.
 
 To run from somewhere else, `export PYTHONPATH="/full/path/to/ASD0231324_247950`
-first.
+first. Since this is a Python module rather than a program, don't forget to clear
+`__pycache__` first if you've changed any of the imports.
+
 
 `-info`     Log level
 `-debug`    Log level
