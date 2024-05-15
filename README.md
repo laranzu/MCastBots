@@ -15,11 +15,15 @@ To run from somewhere else, `export PYTHONPATH="/full/path/to/ASD0231324_247950`
 first. Since this is a Python module rather than a program, don't forget to clear
 `__pycache__` first if you've changed any of the imports.
 
+Various options and parameters can be set from a config file `dnabot.ini` in the
+current directory, ie where you run the program from NOT the DNABot dir. These
+can in turn be overridden by command line args.
 
-`-info`     Log level
+
+`-info`     Log level \
 `-debug`    Log level
 
 `-fg`       Send output (log) to stdout, not to a file
 
-There are command line arguments. Or will be. And a `dnabot.ini` config file
-in the directory you run from (not the program itself). Real Soon Now.
+`-config <filename>`  Use a different config file   \
+`-name=value`         Override config file
