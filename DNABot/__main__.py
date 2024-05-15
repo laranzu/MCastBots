@@ -41,7 +41,7 @@ def initLogging(args):
 def main(args):
     """Main control for DNABot"""
     initLogging(args)
-    config.load(args)
+    config.init(args)
     print("Hello world")
 
 if __name__ == "__main__":
