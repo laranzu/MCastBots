@@ -4,7 +4,7 @@
 
 # Usage: ./spawnBots.py N
 
-import math, os, pathlib, shutil, sys, tempfile, time
+import math, os, shutil, subprocess, sys, tempfile, time
 from os import path
 
 N = 8
@@ -20,13 +20,12 @@ if N > 16:
     time.sleep(UNDO)
 print("Starting {} bots...".format(N))
 
-# Dir setup is /tmp/botNNN/
+# Dir setup is /tmp/botNNN/, zero padded so all same length
 TMP = tempfile.gettempdir()
 
 # How many digits per bot name?
 d = int(math.ceil(math.log10(N + 1)))
-
-# Format for name, zero padded so all same length
+# Format for name
 fmt = "Bot{{:0{:d}d}}".format(d)
 
 # Go!
@@ -36,7 +35,12 @@ for i in range(1, N + 1):
     if path.exists(fullPath):
         shutil.rmtree(fullPath)
     shutil.copytree("./Proto", fullPath)
-    #
+    # Run
+    subprocess.Popen(
+        ["/usr/bin/python", "-m", "DNABot", "-debug"],
+        cwd=fullPath,
+        env={ "PYTHONPATH": "/home/hugh/Progs/ASD/ASD0231324_247950" },
+        )
     print("Bot #{} in {}".format(i, fullPath))
 
 print("OK.")

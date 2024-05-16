@@ -22,7 +22,7 @@ from . import config
 
 # To avoid timezones, leap seconds, daylight saving, ... all bots
 # use a relative clock. Messages will have intervals, not absolute
-# times, so bots don't have to have synchronised clocks.
+# times, so bots don't have to be synchronised.
 
 def clock():
     """Whatever the system relative clock is"""
@@ -32,6 +32,7 @@ def clock():
 ##
 
 def mainLoop():
+    """Run bot for lifespan seconds"""
     # Don't want all bots starting at once
     wait = random.random() * 5
     log.debug("Delay start by {:4.2f}".format(wait))
@@ -69,7 +70,7 @@ def initLogging(args):
 
 
 def boot(args):
-    """Main control for DNABot"""
+    """Run DNABot"""
     initLogging(args)
     config.init(args)
     mainLoop()

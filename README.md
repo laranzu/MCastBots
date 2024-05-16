@@ -27,3 +27,10 @@ can in turn be overridden by command line args.
 
 `-config <filename>`  Use a different config file   \
 `-name=value`         Override config file
+
+
+#### Running lots of bots
+
+`spawnBots.py` is my utility program to run a whole lot of bots on my Linux
+PC for testing. Creates a whole bunch of dirs in /tmp, copies `Proto/` into
+each, starts a new DNABot.
