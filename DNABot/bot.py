@@ -14,9 +14,38 @@
         -fg             Output to console, not file
 """
 
+import random, time
 import logging as log
 
 from . import config
+
+
+# To avoid timezones, leap seconds, daylight saving, ... all bots
+# use a relative clock. Messages will have intervals, not absolute
+# times, so bots don't have to have synchronised clocks.
+
+def clock():
+    """Whatever the system relative clock is"""
+    return time.monotonic()
+
+
+##
+
+def mainLoop():
+    # Don't want all bots starting at once
+    wait = random.random() * 5
+    log.debug("Delay start by {:4.2f}".format(wait))
+    time.sleep(wait)
+    #
+    finish = clock() + config.lifespan
+    while True:
+        time.sleep(1)
+        print("Beep")
+        if clock() > finish:
+            break
+    log.info("Lifespan reached")
+
+##
 
 def initLogging(args):
     """My preferred logging setup"""
@@ -43,4 +72,4 @@ def boot(args):
     """Main control for DNABot"""
     initLogging(args)
     config.init(args)
-    print("Hello world")
+    mainLoop()
