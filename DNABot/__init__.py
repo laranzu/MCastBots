@@ -1,4 +1,4 @@
 
 """
-    The interesting stuff is in __main__.py
+    The interesting stuff is in bot.py
 """
