@@ -4,7 +4,6 @@
 
     Standard dnabot.ini file with one section
     [DNABot]
-    Each global value can have an entry
 """
 
 import logging as log
@@ -17,10 +16,13 @@ SECTION = "DNABot"
 # Time to run, in seconds
 lifespan = 30
 
+# Max delay at start
+startup = 5
+
 
 def init(cliArgs):
     """Initial load from file and CLI args"""
-    global lifespan
+    global lifespan, startup
     #
     config = ConfigParser()
     # Config file can be changed by CLI
@@ -34,6 +36,7 @@ def init(cliArgs):
     # Default values
     hardWired = {
         "lifespan":     str(lifespan),
+        "startup":      str(startup),
     }
     config['DNABot'] = hardWired
     # Read from file, if exists
@@ -55,6 +58,8 @@ def init(cliArgs):
                 pass
     # OK, set global values
     lifespan = config.getint("lifespan")
+    startup = config.getint("startup")
     #
     log.debug("lifespan {}".format(lifespan))
+    log.debug("startup {}".format(startup))
 

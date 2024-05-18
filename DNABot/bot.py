@@ -39,7 +39,7 @@ def clock():
 # I'm testing on a single computer.
 
 def newName():
-    """Create random 8 hex digit identifier for bot"""
+    """Create random hex digit identifier for bot"""
     n = RNG.randint(1, 65535)
     digest = hashlib.new("md5")
     data32 = bytes([
@@ -64,7 +64,7 @@ def mainLoop():
     """Run bot for lifespan seconds"""
     log.info("Bot {} activated".format(botName))
     # Don't want all bots starting at once
-    wait = RNG.random() * 5
+    wait = RNG.random() * config.startup
     log.debug("Delay start by {:4.2f}".format(wait))
     time.sleep(wait)
     #
