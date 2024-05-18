@@ -14,7 +14,8 @@
         -fg             Output to console, not file
 """
 
-import random, time
+import hashlib, time
+import random as RNG
 import logging as log
 
 from . import config
@@ -29,19 +30,46 @@ def clock():
     return time.monotonic()
 
 
+# Bots need some kind of unique identifier on messages, and I want
+# them to be self configuring. Can't be based on IP address because
+# I'm testing on a single computer.
+
+def newName():
+    """Create random 8 hex digit identifier for bot"""
+    n = RNG.randint(1, 65535)
+    digest = hashlib.new("md5")
+    data32 = bytes([
+            (n >> 24) & 0x0FF,
+            (n >> 16) & 0x0FF,
+            (n >> 8) & 0x0FF,
+            (n & 0x0FF)])
+    digest.update(data32)
+    # Finish calculation (pad, etc)
+    name = digest.hexdigest()
+    # Did you know the top 32 bits of the MD5 hashes for 16 bit
+    # integers don't collide? Now you do.
+    name = name[0:8]
+    # And uppercase to be more robotic
+    name = name.upper()
+    return name
+
+
 ##
 
 def mainLoop():
     """Run bot for lifespan seconds"""
+    # Need unique identifier for network messages.
+    botName = newName()
+    log.info("Bot {} activated".format(botName))
     # Don't want all bots starting at once
-    wait = random.random() * 5
+    wait = RNG.random() * 5
     log.debug("Delay start by {:4.2f}".format(wait))
     time.sleep(wait)
     #
     finish = clock() + config.lifespan
     while True:
         time.sleep(1)
-        print("Beep")
+        print("{} Beep".format(botName))
         if clock() > finish:
             break
     log.info("Lifespan reached")
@@ -68,9 +96,15 @@ def initLogging(args):
         params["filename"] = "./dnabot.log"
     log.basicConfig(**params)
 
+def initBot(args):
+    """One time startup"""
+    # Don't need cryptographic quality truly random numbers,
+    # but bots must not be in lockstep eg for name generation
+    RNG.seed(time.perf_counter())
 
 def boot(args):
     """Run DNABot"""
     initLogging(args)
+    initBot(args)
     config.init(args)
     mainLoop()

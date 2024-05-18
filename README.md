@@ -6,6 +6,13 @@ AKA laranzu \
 Canberra, Australia \
 hugo.fisher@gmail.com
 
+Inspired by the Paranoia tabletop roleplaying game. (Which is also my excuse
+for rushed coding and complete lack of security.) The clients are R&D robots,
+using recombinant genetic engineering to create new DNA therapies, pollution
+eating algae, and fast food flavours. The bots are supervised by humans who
+keep an eye on progress and upload data from the bots to the server. (Better
+than being the one who has to _test_ the new products.)
+
 #### Running program
 
 Written as a Python package, so run with `python -m DNABot` from parent
