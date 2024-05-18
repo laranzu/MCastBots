@@ -11,18 +11,21 @@ from configparser import ConfigParser
 
 SECTION = "DNABot"
 
-##  All these can be set by config file
+##  All these can be set by config file or command line
 
 # Time to run, in seconds
-lifespan = 30
+lifespan = 240
 
 # Max delay at start
 startup = 5
 
+# Bot needs to send at least one message over this many seconds
+heartbeat = 10
+
 
 def init(cliArgs):
     """Initial load from file and CLI args"""
-    global lifespan, startup
+    global lifespan, startup, heartbeat
     #
     config = ConfigParser()
     # Config file can be changed by CLI
@@ -37,6 +40,7 @@ def init(cliArgs):
     hardWired = {
         "lifespan":     str(lifespan),
         "startup":      str(startup),
+        "heartbeat":    str(heartbeat),
     }
     config['DNABot'] = hardWired
     # Read from file, if exists
@@ -59,7 +63,9 @@ def init(cliArgs):
     # OK, set global values
     lifespan = config.getint("lifespan")
     startup = config.getint("startup")
+    heartbeat = config.getint("heartbeat")
     #
     log.debug("lifespan {}".format(lifespan))
     log.debug("startup {}".format(startup))
+    log.debug("heartbeat {}".format(heartbeat))
 

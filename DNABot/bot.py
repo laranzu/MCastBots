@@ -68,12 +68,23 @@ def mainLoop():
     log.debug("Delay start by {:4.2f}".format(wait))
     time.sleep(wait)
     #
-    finish = clock() + config.lifespan
+    now = clock()
+    finish = now + config.lifespan
+    # Heartbeat has two timers. Control timer is fixed interval from
+    # program start time, beat timer is control - small random
+    # so we always send something a bit ahead of time
+    beatControl = now + config.heartbeat
+    nextBeat = beatControl - RNG.random() * 2
     while True:
         time.sleep(1)
-        print("{} Beep".format(botName))
-        if clock() > finish:
+        # Timers gone off?
+        now = clock()
+        if now > finish:
             break
+        if now > nextBeat:
+            beatControl += config.heartbeat
+            nextBeat = beatControl - RNG.random() * 2
+            print("{} Beep".format(botName))
     log.info("Lifespan reached")
 
 ##
