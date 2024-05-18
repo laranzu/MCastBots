@@ -21,6 +21,10 @@ import logging as log
 from . import config
 
 
+# Global state which isn't in config yet
+botName = None
+
+
 # To avoid timezones, leap seconds, daylight saving, ... all bots
 # use a relative clock. Messages will have intervals, not absolute
 # times, so bots don't have to be synchronised.
@@ -58,8 +62,6 @@ def newName():
 
 def mainLoop():
     """Run bot for lifespan seconds"""
-    # Need unique identifier for network messages.
-    botName = newName()
     log.info("Bot {} activated".format(botName))
     # Don't want all bots starting at once
     wait = RNG.random() * 5
@@ -98,9 +100,13 @@ def initLogging(args):
 
 def initBot(args):
     """One time startup"""
+    global botName
     # Don't need cryptographic quality truly random numbers,
     # but bots must not be in lockstep eg for name generation
     RNG.seed(time.perf_counter())
+    # Need unique identifier for network messages.
+    botName = newName()
+
 
 def boot(args):
     """Run DNABot"""
