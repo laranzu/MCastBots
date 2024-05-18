@@ -60,6 +60,18 @@ def newName():
 
 ##
 
+
+# Heartbeat has two timers. Control timer is fixed interval from
+# program start time, next timer is control - small random value
+# so we always send something a bit ahead of schedule
+
+def nextHeartBeat(t):
+    """Return updated control, next times from t"""
+    beatControl = t + config.heartbeat
+    nextBeat = beatControl - RNG.random() * 2
+    return beatControl, nextBeat
+
+
 def mainLoop():
     """Run bot for lifespan seconds"""
     log.info("Bot {} activated".format(botName))
@@ -70,11 +82,7 @@ def mainLoop():
     #
     now = clock()
     finish = now + config.lifespan
-    # Heartbeat has two timers. Control timer is fixed interval from
-    # program start time, beat timer is control - small random
-    # so we always send something a bit ahead of time
-    beatControl = now + config.heartbeat
-    nextBeat = beatControl - RNG.random() * 2
+    beatControl, nextBeat = nextHeartBeat(now)
     while True:
         time.sleep(1)
         # Timers gone off?
@@ -82,8 +90,7 @@ def mainLoop():
         if now > finish:
             break
         if now > nextBeat:
-            beatControl += config.heartbeat
-            nextBeat = beatControl - RNG.random() * 2
+            beatControl, nextBeat = nextHeartBeat(beatControl)
             print("{} Beep".format(botName))
     log.info("Lifespan reached")
 

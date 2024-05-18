@@ -61,11 +61,7 @@ def init(cliArgs):
             except IndexError:
                 pass
     # OK, set global values
-    lifespan = config.getint("lifespan")
-    startup = config.getint("startup")
-    heartbeat = config.getint("heartbeat")
-    #
-    log.debug("lifespan {}".format(lifespan))
-    log.debug("startup {}".format(startup))
-    log.debug("heartbeat {}".format(heartbeat))
+    for name in ("lifespan", "startup", "heartbeat"):
+        globals()[name] = config.getint(name)
+        log.debug("{} {}".format(name, globals()[name]))
 
