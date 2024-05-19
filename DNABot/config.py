@@ -11,21 +11,26 @@ from configparser import ConfigParser
 
 SECTION = "DNABot"
 
-##  All these can be set by config file or command line
+##  All these can be set by config file or command line.
+##  Need to add each at two places in code below
 
 # Time to run, in seconds
 lifespan = 240
-
 # Max delay at start
 startup = 5
-
 # Bot needs to send at least one message over this many seconds
 heartbeat = 10
 
+# Multicast group address
+groupAddress = "239.1.2.4"
+# receive port
+groupPort = 8421
+
+
+##
 
 def init(cliArgs):
     """Initial load from file and CLI args"""
-    global lifespan, startup, heartbeat
     #
     config = ConfigParser()
     # Config file can be changed by CLI
@@ -41,6 +46,8 @@ def init(cliArgs):
         "lifespan":     str(lifespan),
         "startup":      str(startup),
         "heartbeat":    str(heartbeat),
+        "groupAddress": groupAddress,
+        "groupPort":    str(groupPort)
     }
     config['DNABot'] = hardWired
     # Read from file, if exists
@@ -61,7 +68,11 @@ def init(cliArgs):
             except IndexError:
                 pass
     # OK, set global values
-    for name in ("lifespan", "startup", "heartbeat"):
+    # Need to convert from config string to appropriate types
+    for name in ("lifespan", "startup", "heartbeat", "groupPort"):
         globals()[name] = config.getint(name)
+        log.debug("{} {}".format(name, globals()[name]))
+    for name in ("groupAddress",):
+        globals()[name] = config.get(name)
         log.debug("{} {}".format(name, globals()[name]))
 

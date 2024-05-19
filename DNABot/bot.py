@@ -18,7 +18,7 @@ import hashlib, time
 import random as RNG
 import logging as log
 
-from . import config
+from . import config, mcast
 
 
 # Global state which isn't in config yet
