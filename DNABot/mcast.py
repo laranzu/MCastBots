@@ -4,10 +4,14 @@
     Basic unreliable multicast for now - since I'm running my tests
     on localhost, not a problem.
     The Plan is to add NACK based reliability in a future version.
+
+    See protocol.md for description of packets
 """
 
 import socket, struct
 import logging as log
+
+from . import config
 
 
 class BasicChannel(object):
@@ -33,7 +37,6 @@ class BasicChannel(object):
         self.sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, optVal)
         # For sending
         self.sock.connect((self.address, self.receivePort))
-        return self.sock
 
     def close(self):
         """Close channel"""
@@ -41,5 +44,25 @@ class BasicChannel(object):
         optVal = struct.pack('4sL', addr, socket.INADDR_ANY)
         self.sock.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, optVal)
         self.sock.close()
-        log.debug("Close group channel")
-        
+        log.debug("Closed group channel")
+
+    ##
+
+    def write(self, message):
+        """Prefix with sender and sequence number, send"""
+        msg = "{} {} ".format(self.sender, self.seqNo) + message
+        self.sock.send(msg.encode('UTF-8'))
+        self.seqNo += 1
+
+    def read(self):
+        """Return next message including header"""
+        data = self.sock.recv(config.MAX_PACKET)
+        msg = data.decode('utf-8', 'backslashreplace')
+        return msg
+
+    ##
+
+    def rename(self, newSender):
+        """Bot can change sender ID"""
+        log.debug("Change sender ID from {} to {}".format(self.sender, newSender))
+        self.sender = newSender
