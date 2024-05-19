@@ -5,6 +5,10 @@
     on localhost, not a problem.
     The Plan is to add NACK based reliability in a future version.
 
+    17 May: Something is Wrong. Bots can send to the group address without
+    problem, but they/the supervisor can't read anything. Not sure what
+    I'm doing wrong :-(
+
     See protocol.md for description of packets
 """
 
@@ -35,8 +39,9 @@ class BasicChannel(object):
         addr = socket.inet_aton(self.address)
         optVal = struct.pack('4sL', addr, socket.INADDR_ANY)
         self.sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, optVal)
+        self.sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 1)
         # For sending
-        self.sock.connect((self.address, self.receivePort))
+        #self.sock.connect((self.address, self.receivePort))
 
     def close(self):
         """Close channel"""
@@ -51,13 +56,17 @@ class BasicChannel(object):
     def write(self, message):
         """Prefix with sender and sequence number, send"""
         msg = "{} {} ".format(self.sender, self.seqNo) + message
-        self.sock.send(msg.encode('UTF-8'))
+        self.sock.sendto(msg.encode('UTF-8'), (self.address, self.receivePort))
         self.seqNo += 1
 
     def read(self):
         """Return next message including header"""
-        data = self.sock.recv(config.MAX_PACKET)
-        msg = data.decode('utf-8', 'backslashreplace')
+        try:
+            msg = self.sock.recv(config.MAX_PACKET)
+            if msg is not None:
+                msg = msg.decode('utf-8', 'backslashreplace')
+        except socket.timeout:
+            msg = None
         return msg
 
     ##

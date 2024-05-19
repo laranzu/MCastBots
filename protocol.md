@@ -22,8 +22,8 @@ Standard prefix is
 The `sender` is the identifier assigned by the program. Bots have an 8
 digit hex identifier, randomly chosen.
 
-The `sequence number` is a sender-specific, not global, integer. I was
-going to implement an OSPF 32 bit lollipop wrapping sequence,
+The `sequence number` is a sender-specific, not global, integer.
+I was going to implement an OSPF 32 bit lollipop wrapping sequence,
 but then I remembered this is Python and we have infinite precision
 integers. (Plus I doubt these bots are going to run for long enough
 to overflow anything.) So they just keep incrementing from 1.
@@ -62,7 +62,7 @@ created scientific data.
 `KILL dest`
 Activate bot self-destruct, removing both bot and any research results.
 Supervisors are advised to use only when absolutely necessary as it makes
-the other bots nervous.
+the other bots nervous. If the dest is * everything shuts down.
 
 
 #### Reliable multicast opcodes

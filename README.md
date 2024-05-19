@@ -13,6 +13,12 @@ eating algae, and fast food flavours. The bots are supervised by humans who
 keep an eye on progress and upload data from the bots to the server. (Better
 than being the one who has to _test_ the new products.)
 
+The bots all share a common multicast group address, which is also used by
+the supervisor program.
+
+IN THEORY. THIS IS NOT WORKING :-( NOTHING GETS RECEIVED
+
+
 #### Running program
 
 Written as a Python package, so run with `python -m DNABot` from parent
@@ -41,3 +47,13 @@ can in turn be overridden by command line args.
 `spawnBots.py` is my utility program to run a whole lot of bots on my Linux
 PC for testing. Creates a whole bunch of dirs in /tmp, copies `Proto/` into
 each, starts a new DNABot.
+
+
+#### Running the supervisor
+
+This is another Python package, so `python -m Supervisor`
+
+The supervisor borrows some code from DNABot, so if you want to move the code
+somewhere else, copy everything.
+
+If you want to run more than one supervisor at a time, sure why not?
