@@ -33,6 +33,8 @@ def clock():
     """Whatever the system relative clock is"""
     return time.monotonic()
 
+channel = None
+
 
 # Bots need some kind of unique identifier on messages, and I want
 # them to be self configuring. Can't be based on IP address because
@@ -93,6 +95,7 @@ def mainLoop():
             beatControl, nextBeat = nextHeartBeat(beatControl)
             print("{} Beep".format(botName))
     log.info("Lifespan reached")
+    channel.close()
 
 ##
 
@@ -118,17 +121,19 @@ def initLogging(args):
 
 def initBot(args):
     """One time startup"""
-    global botName
+    global botName, channel
     # Don't need cryptographic quality truly random numbers,
     # but bots must not be in lockstep eg for name generation
     RNG.seed(time.perf_counter())
     # Need unique identifier for network messages.
     botName = newName()
+    # Now connect to channel
+    channel = mcast.BasicChannel(config.groupAddress, config.groupPort, botName)
 
 
 def boot(args):
     """Run DNABot"""
     initLogging(args)
-    initBot(args)
     config.init(args)
+    initBot(args)
     mainLoop()

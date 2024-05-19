@@ -15,7 +15,7 @@ SECTION = "DNABot"
 ##  Need to add each at two places in code below
 
 # Time to run, in seconds
-lifespan = 240
+lifespan = 30
 # Max delay at start
 startup = 5
 # Bot needs to send at least one message over this many seconds
