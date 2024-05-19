@@ -37,9 +37,45 @@ that this is an informational message, no action required.
 
 #### Opcodes
 
-`NEWS text...`
-Bot has discovered a new genetic sequence. Rest of the message is a
-short text description.
+`NEWS * text...`
+Bot has discovered a new genetic sequence or something. Just notice,
+actual data stored by bot in a file.
 
-`BEAT text...`
-This is a heartbeat message to indicate that the bot is still running.
+`BEAT * text...`
+Heartbeat message to indicate that the bot is still running.
+
+`UPLD dest portnum filename`
+Request bot to open TCP connection to specified port on sender and
+upload the named file. Most often used to upload bot scientific data,
+but could be config file, source code, etc.
+
+TCP probably will be HTTP response with status code and content type
+descriptor before data.
+
+`PING dest`
+Request bot send an immediate BEAT message.
+
+`RSET dest`
+Request bot to reset itself from configuration file, keeping any
+created scientific data.
+
+`KILL dest`
+Activate bot self-destruct, removing both bot and any research results.
+Supervisors are advised to use only when absolutely necessary as it makes
+the other bots nervous.
+
+
+#### Reliable multicast opcodes
+
+`NACK sender sequenceNumber`
+Missing packet detected by gaps in received sequence numbers. Since this
+is multicast will be random backoff, and don't NACK if someone else has
+already done so.
+
+`RSND sender sequenceNumber message...`
+Resend in response to NACK. Usually expected to be the original sender,
+but any bot with a copy of the packet can do so.
+
+`SKIP sender sequenceNumber`
+Indicate that missing packet was a BEAT, NACK, or RSND that does not
+need retransmission, or that original message wasn't saved or something.
