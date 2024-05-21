@@ -31,7 +31,8 @@ class BasicChannel(object):
         # For listening
         self.input = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.input.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.input.bind(("0.0.0.0", self.receivePort))
+        #self.input.bind(("0.0.0.0", self.receivePort))
+        self.input.bind((self.address, self.receivePort))
         binAddr = socket.inet_aton(self.address)
         mreqn = struct.pack('!4BIH', *binAddr, socket.INADDR_ANY, 0)
         self.input.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreqn)
@@ -56,9 +57,8 @@ class BasicChannel(object):
     def write(self, message):
         """Prefix with sender and sequence number, send"""
         msg = "{} {} ".format(self.sender, self.seqNo) + message
-        # Even though this socket is connected, use sendto because of Linux
-        # weirdness when multicasting to locahost. I think
-        self.output.sendto(msg.encode('UTF-8'), (self.address, self.receivePort))
+        #self.output.sendto(msg.encode('UTF-8'), (self.address, self.receivePort))
+        self.output.send(msg.encode('UTF-8'))
         self.seqNo += 1
 
     def read(self):
