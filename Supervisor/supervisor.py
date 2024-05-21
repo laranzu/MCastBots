@@ -28,11 +28,13 @@ def clock():
 
 def listener(channel):
     """Listen to bot activity"""
-    #channel.sock.settimeout(1.0)
+    channel.input.settimeout(1.0)
     while True:
         msg = channel.read()
         if msg is not None:
             print(msg)
+        else:
+            print("Waiting...")
 
 ##
 
