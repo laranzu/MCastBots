@@ -5,10 +5,6 @@
     on localhost, not a problem.
     The Plan is to add NACK based reliability in a future version.
 
-    17 May: Something is Wrong. Bots can send to the group address without
-    problem, but they/the supervisor can't read anything. Not sure what
-    I'm doing wrong :-(
-
     See protocol.md for description of packets
 """
 
@@ -27,28 +23,31 @@ class BasicChannel(object):
         self.receivePort = portNumber
         self.sender = senderID
         self.seqNo = 1
-        self.createSocket()
+        self.createSockets()
         log.info("Connected to group channel {}:{} as {}".format(self.address, self.receivePort, self.sender))
 
-    def createSocket(self):
-        """Multicast socket for sending and receiving"""
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    def createSockets(self):
+        """Need one socket for send, one for receive"""
         # For listening
-        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.sock.bind((self.address, self.receivePort))
-        addr = socket.inet_aton(self.address)
-        optVal = struct.pack('4sL', addr, socket.INADDR_ANY)
-        self.sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, optVal)
-        self.sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 1)
+        # self.input = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+        # self.input.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        # self.input.bind(("0.0.0.0", self.receivePort))
+        # addr = socket.inet_aton(self.address)
+        # optVal = struct.pack('4sL', addr, socket.INADDR_ANY)
+        # self.input.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, optVal)
         # For sending
-        #self.sock.connect((self.address, self.receivePort))
+        self.output = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+        self.output.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.output.connect((self.address, self.receivePort))
+        log.debug("BasicChannel output socket created")
 
     def close(self):
         """Close channel"""
-        addr = socket.inet_aton(self.address)
-        optVal = struct.pack('4sL', addr, socket.INADDR_ANY)
-        self.sock.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, optVal)
-        self.sock.close()
+        # addr = socket.inet_aton(self.address)
+        # optVal = struct.pack('4sL', addr, socket.INADDR_ANY)
+        # self.input.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, optVal)
+        # self.input.close()
+        self.output.close()
         log.debug("Closed group channel")
 
     ##
@@ -56,13 +55,16 @@ class BasicChannel(object):
     def write(self, message):
         """Prefix with sender and sequence number, send"""
         msg = "{} {} ".format(self.sender, self.seqNo) + message
-        self.sock.sendto(msg.encode('UTF-8'), (self.address, self.receivePort))
+        # Even though this socket is connected, use sendto because of Linux
+        # weirdness when multicasting to locahost
+        self.output.sendto(msg.encode('UTF-8'), (self.address, self.receivePort))
         self.seqNo += 1
 
     def read(self):
         """Return next message including header"""
+        return ""
         try:
-            msg = self.sock.recv(config.MAX_PACKET)
+            msg = self.input.recv(config.MAX_PACKET)
             if msg is not None:
                 msg = msg.decode('utf-8', 'backslashreplace')
         except socket.timeout:
