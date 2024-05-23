@@ -15,6 +15,7 @@ import logging as log
 
 from DNABot import config, mcast
 
+from . import capture
 
 global channel
 
@@ -25,18 +26,6 @@ def clock():
     """Whatever the system relative clock is"""
     return time.monotonic()
 
-
-def listener(channel):
-    """Listen to bot activity"""
-    nextReport = clock() + config.heartbeat
-    while True:
-        msg = channel.read()
-        if msg is not None:
-            print(msg)
-            nextReport = clock() + config.heartbeat
-        elif clock() > nextReport:
-            print("Waiting...")
-            nextReport = clock() + config.heartbeat
 
 ##
 
@@ -74,4 +63,4 @@ def main(args):
     initSupervisor(args)
     #
     # TODO start threads
-    listener(channel)
+    capture.listener(channel)

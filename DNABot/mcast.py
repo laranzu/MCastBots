@@ -39,6 +39,7 @@ class BasicChannel(object):
             binAddr = socket.inet_aton(self.address)
             mreqn = struct.pack('!4sIH', binAddr, socket.INADDR_ANY, 0)
             self.input.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreqn)
+            log.debug("Added membership for {}".format(self.address))
         # For sending
         self.output = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.output.connect((self.address, self.destPort))
