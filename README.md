@@ -14,15 +14,10 @@ keep an eye on progress and upload data from the bots to the server. (Better
 than being the one who has to _test_ the new products.)
 
 The bots all share a common multicast group address, which is also used by
-the supervisor program.
-
-IN THEORY. Multicast status 21 May: a Mac running a (C++) multicast listener
-can receive messages sent by the bots. On Linux though nothing is receiving
-multicast, whether Python or C++, which makes me think something strange is
-going on.
+the supervisor program. (For testing, should also work with 127.0.0.1)
 
 
-#### Running program
+#### Running bot
 
 Written as a Python package, so run with `python -m DNABot` from parent
 directory.
