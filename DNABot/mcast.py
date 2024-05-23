@@ -1,5 +1,6 @@
 """
-    Multicast group protocol for bots and supervisors
+    Multicast group protocol for bots and supervisors.
+    Not a channel in the CSP sense, I just watch a lot of science fiction.
 
     Basic unreliable multicast for now - since I'm running my tests
     on localhost, not a problem.
@@ -8,7 +9,7 @@
     See protocol.md for description of packets
 """
 
-import socket, struct
+import ipaddress, socket, struct
 import logging as log
 
 from . import config
@@ -20,51 +21,57 @@ class BasicChannel(object):
     def __init__(self, IPaddress, portNumber, senderID):
         """Create and connect new socket for group address"""
         self.address = IPaddress
-        self.receivePort = portNumber
+        self.destPort = portNumber
         self.sender = senderID
         self.seqNo = 1
         self.createSockets()
-        log.info("Connected to group channel {}:{} as {}".format(self.address, self.receivePort, self.sender))
+        log.info("Connected to group channel {}:{} as {}".format(self.address, self.destPort, self.sender))
 
     def createSockets(self):
-        """Need one socket for send, one for receive"""
+        """Input and output sockets (for unicast, actually the same)"""
         # For listening
-        self.input = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+        self.input = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.input.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        #self.input.bind(("0.0.0.0", self.receivePort))
-        self.input.bind((self.address, self.receivePort))
-        binAddr = socket.inet_aton(self.address)
-        mreqn = struct.pack('!4BIH', *binAddr, socket.INADDR_ANY, 0)
-        self.input.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreqn)
-        log.debug("BasicChannel input socket created")
-        # For sending
-        self.output = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-        self.output.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.output.connect((self.address, self.receivePort))
-        log.debug("BasicChannel output socket created")
+        self.input.settimeout(1.0)
+        # Although designed for multicast, can use localhost for testing
+        if ipaddress.ip_address(self.address).is_multicast:
+            self.input.bind((self.address, self.destPort))
+            binAddr = socket.inet_aton(self.address)
+            mreqn = struct.pack('!4sIH', binAddr, socket.INADDR_ANY, 0)
+            self.input.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreqn)
+            self.output = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+            log.debug("Sockets for multicast {}:{}".format(self.address, self.destPort))
+        else:
+            self.input.bind((self.address, self.destPort))
+            #self.input.bind(("0.0.0.0", self.destPort))
+            log.debug("Unicast socket for {}:{}".format(self.address, self.destPort))
+            self.output = self.input
+        log.debug("BasicChannel sockets created")
 
     def close(self):
         """Close channel"""
-        binAddr = socket.inet_aton(self.address)
-        mreqn = struct.pack('!4BIH', *binAddr, socket.INADDR_ANY, 0)
-        self.input.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, mreqn)
+        if ipaddress.ip_address(self.address).is_multicast:
+            binAddr = socket.inet_aton(self.address)
+            mreqn = struct.pack('!4BIH', *binAddr, socket.INADDR_ANY, 0)
+            self.input.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, mreqn)
         self.input.close()
-        self.output.close()
-        log.debug("Closed group channel")
+        if self.output != self.input:
+            self.output.close()
+        log.debug("Closed channel")
 
     ##
 
     def write(self, message):
         """Prefix with sender and sequence number, send"""
         msg = "{} {} ".format(self.sender, self.seqNo) + message
-        #self.output.sendto(msg.encode('UTF-8'), (self.address, self.receivePort))
-        self.output.send(msg.encode('UTF-8'))
+        self.output.sendto(msg.encode('UTF-8'), (self.address, self.destPort))
+        #self.output.send(msg.encode('UTF-8'))
         self.seqNo += 1
 
     def read(self):
         """Return next message including header"""
         try:
-            msg = self.input.recv(config.MAX_PACKET)
+            msg, src = self.input.recvfrom(config.MAX_PACKET)
             if msg is not None:
                 msg = msg.decode('utf-8', 'backslashreplace')
         except socket.timeout:

@@ -21,10 +21,12 @@ startup = 5
 # Bot needs to send at least one message over this many seconds
 heartbeat = 10
 
-# Multicast group address
-groupAddress = "239.1.2.4"
+# Multicast channel for group communication
+# Expected to be multicast, but 127.0.0.1 works for testing
+#chanAddr = "239.1.2.4"
+chanAddr = "127.0.0.1"
 # receive port
-groupPort = 8421
+chanPort = 8421
 # Maximum expected packet size
 MAX_PACKET = 1024
 
@@ -48,8 +50,8 @@ def init(cliArgs):
         "lifespan":     str(lifespan),
         "startup":      str(startup),
         "heartbeat":    str(heartbeat),
-        "groupAddress": groupAddress,
-        "groupPort":    str(groupPort),
+        "chanAddr":     chanAddr,
+        "chanPort":     str(chanPort),
         "MAX_PACKET":   str(MAX_PACKET),
     }
     config['DNABot'] = hardWired
@@ -72,10 +74,10 @@ def init(cliArgs):
                 pass
     # OK, set global values
     # Need to convert from config string to appropriate types
-    for name in ("lifespan", "startup", "heartbeat", "groupPort", "MAX_PACKET"):
+    for name in ("lifespan", "startup", "heartbeat", "chanPort", "MAX_PACKET"):
         globals()[name] = config.getint(name)
         log.debug("{} {}".format(name, globals()[name]))
-    for name in ("groupAddress",):
+    for name in ("chanAddr",):
         globals()[name] = config.get(name)
         log.debug("{} {}".format(name, globals()[name]))
 

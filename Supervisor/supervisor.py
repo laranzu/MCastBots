@@ -28,13 +28,15 @@ def clock():
 
 def listener(channel):
     """Listen to bot activity"""
-    channel.input.settimeout(1.0)
+    nextReport = clock() + config.heartbeat
     while True:
         msg = channel.read()
         if msg is not None:
             print(msg)
-        else:
+            nextReport = clock() + config.heartbeat
+        elif clock() > nextReport:
             print("Waiting...")
+            nextReport = clock() + config.heartbeat
 
 ##
 
@@ -62,7 +64,7 @@ def initSupervisor(args):
     # 
     RNG.seed(time.perf_counter())
     # Connect to channel
-    channel = mcast.BasicChannel(config.groupAddress, config.groupPort, "HUMAN")
+    channel = mcast.BasicChannel(config.chanAddr, config.chanPort, "HUMAN")
 
 
 def main(args):

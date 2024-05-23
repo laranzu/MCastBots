@@ -84,7 +84,8 @@ def mainLoop():
     #
     now = clock()
     finish = now + config.lifespan
-    beatControl, nextBeat = nextHeartBeat(now)
+    beatControl = now
+    nextBeat = now
     while True:
         time.sleep(1)
         # Timers gone off?
@@ -129,7 +130,7 @@ def initBot(args):
     # Need unique identifier for network messages.
     botName = newName()
     # Now connect to channel
-    channel = mcast.BasicChannel(config.groupAddress, config.groupPort, botName)
+    channel = mcast.BasicChannel(config.chanAddr, config.chanPort, botName)
 
 
 def boot(args):
