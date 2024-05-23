@@ -9,7 +9,7 @@
     hugo.fisher@gmail.com
 """
 
-import time
+import sys, threading, time
 import random as RNG
 import logging as log
 
@@ -58,9 +58,16 @@ def initSupervisor(args):
 
 def main(args):
     """Run supervisor"""
-    initLogging(args)
-    config.init(args)
-    initSupervisor(args)
-    #
-    # TODO start threads
-    capture.listener(channel)
+    try:
+        initLogging(args)
+        config.init(args)
+        initSupervisor(args)
+        #
+        listener = capture.Listener(channel, sys.stdout)
+        listener.start()
+        while True:
+            time.sleep(1.0)
+    except KeyboardInterrupt:
+        print("Stopping")
+        listener.running = False
+    listener.join()
