@@ -17,7 +17,11 @@ from DNABot import config, mcast
 
 from . import capture
 
-global channel
+
+# Global state: multicast group and a couple of threads
+
+channel = None
+listener = None
 
 
 ##
@@ -26,6 +30,18 @@ def clock():
     """Whatever the system relative clock is"""
     return time.monotonic()
 
+
+##
+
+def commandLoop():
+    """Read and execute commands from console"""
+    log.debug("Start command loop")
+    try:
+        while True:
+            time.sleep(1.0)
+    except KeyboardInterrupt:
+        pass
+    log.debug("Command loop end")
 
 ##
 
@@ -58,16 +74,14 @@ def initSupervisor(args):
 
 def main(args):
     """Run supervisor"""
-    try:
-        initLogging(args)
-        config.init(args)
-        initSupervisor(args)
-        #
-        listener = capture.Listener(channel, sys.stdout)
-        listener.start()
-        while True:
-            time.sleep(1.0)
-    except KeyboardInterrupt:
-        print("Stopping")
-        listener.running = False
+    initLogging(args)
+    config.init(args)
+    initSupervisor(args)
+    #
+    listener = capture.Listener(channel, sys.stdout)
+    listener.start()
+    commandLoop()
+    #
+    listener.running = False
     listener.join()
+    log.info("Supervisor shutdown")
