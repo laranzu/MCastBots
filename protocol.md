@@ -37,12 +37,19 @@ that this is an informational message, no action required.
 
 #### Opcodes
 
+**Implemented**
+
+`BEAT * text...`
+Heartbeat message to indicate that the bot is still running.
+
 `NEWS * text...`
 Bot has discovered a new genetic sequence or something. Just notice,
 actual data stored by bot in a file.
 
-`BEAT * text...`
-Heartbeat message to indicate that the bot is still running.
+**Aspirational**
+
+`PING dest`
+Request bot send an immediate BEAT message.
 
 `UPLD dest portnum filename`
 Request bot to open TCP connection to specified port on sender and
@@ -51,9 +58,6 @@ but could be config file, source code, etc.
 
 TCP probably will be HTTP response with status code and content type
 descriptor before data.
-
-`PING dest`
-Request bot send an immediate BEAT message.
 
 `RSET dest`
 Request bot to reset itself from configuration file, keeping any
