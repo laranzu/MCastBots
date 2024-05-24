@@ -70,7 +70,7 @@ class BasicChannel(object):
             msg, src = self.input.recvfrom(config.MAX_PACKET)
             if msg is not None:
                 msg = msg.decode('utf-8', 'backslashreplace')
-        except socket.timeout:
+        except (socket.timeout, TimeoutError):
             msg = None
         return msg
 
