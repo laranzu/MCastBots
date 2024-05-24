@@ -39,8 +39,10 @@ def commandLoop():
     try:
         while True:
             command = input()
+            # Enter by itself pauses / resumes output from capture thread
             if len(command) == 0:
-                print("ENTER")
+                listener.paused = not listener.paused
+                log.debug("Listener paused: {}".format(listener.paused))
             else:
                 print("Exec", command)
     except (KeyboardInterrupt, EOFError):
@@ -78,6 +80,8 @@ def initSupervisor(args):
 
 def main(args):
     """Run supervisor"""
+    global channel, listener
+    #
     initLogging(args)
     config.init(args)
     initSupervisor(args)

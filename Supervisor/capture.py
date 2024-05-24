@@ -28,7 +28,7 @@ class Listener(threading.Thread):
     def run(self):
         """Listen to bot activity"""
         log.debug("Start bot traffic monitor thread")
-        nextReport = supervisor.clock() + config.heartbeat
+        nextReport = supervisor.clock() + config.heartbeat * 2
         while self.running:
             # Resume after pause?
             while len(self.store) > 0 and not self.paused:
@@ -42,7 +42,7 @@ class Listener(threading.Thread):
                     self.store.append(msg)
                 else:
                     self.output.write(msg + "\n")
-                nextReport = now + config.heartbeat
+                nextReport = now + config.heartbeat * 2
             # Nothing happening?
             elif now > nextReport and not self.paused:
                 self.output.write("Channel is quiet...\n")
