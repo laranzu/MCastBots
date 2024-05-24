@@ -38,8 +38,12 @@ def commandLoop():
     log.debug("Start command loop")
     try:
         while True:
-            time.sleep(1.0)
-    except KeyboardInterrupt:
+            command = input()
+            if len(command) == 0:
+                print("ENTER")
+            else:
+                print("Exec", command)
+    except (KeyboardInterrupt, EOFError):
         pass
     log.debug("Command loop end")
 

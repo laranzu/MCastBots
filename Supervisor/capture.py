@@ -23,7 +23,7 @@ class Listener(threading.Thread):
 
     def run(self):
         """Listen to bot activity"""
-        log.debug("Start listener thread")
+        log.debug("Start bot traffic monitor thread")
         nextReport = supervisor.clock() + config.heartbeat
         while self.running:
             msg = self.channel.read()
@@ -34,4 +34,4 @@ class Listener(threading.Thread):
             elif now > nextReport:
                 self.output.write("Channel is quiet...\n")
                 nextReport = now + config.heartbeat
-        log.info("End listener")
+        log.info("End bot traffic monitor")
