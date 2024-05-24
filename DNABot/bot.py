@@ -21,8 +21,9 @@ import logging as log
 from . import config, mcast
 
 
-# Global state which isn't in config yet
+# Global state which isn't in config
 botName = None
+channel = None
 
 
 # To avoid timezones, leap seconds, daylight saving, ... all bots
@@ -33,7 +34,6 @@ def clock():
     """Whatever the system relative clock is"""
     return time.monotonic()
 
-channel = None
 
 
 # Bots need some kind of unique identifier on messages, and I want
@@ -73,6 +73,25 @@ def nextHeartBeat(t):
     nextBeat = beatControl - RNG.random() * 2
     return beatControl, nextBeat
 
+def doResearch():
+    """If bot discovers something, update file and return true"""
+    if RNG.random() > config.discovery:
+        return False
+    products = (
+        "Bouncy Bubbly Beverage additive",
+        "Cherenkov cellular damage lotion",
+        "Plastic eating algae",
+        "Soup decontaminant",
+        "Synthetic probiotic supplement",
+        )
+    result = RNG.choice(products)
+    # Append to file
+    f = open(config.results, "at")
+    f.write(result + "\n")
+    f.close()
+    # Main program sends packet
+    return True
+
 
 def mainLoop():
     """Run bot for lifespan seconds"""
@@ -89,13 +108,21 @@ def mainLoop():
         nextBeat = now
         while True:
             time.sleep(1)
+            # Research?
+            if doResearch():
+                # Notify everybody
+                msg = "NEWS * Discovery"
+                channel.write(msg)
+                log.info("{} {}".format(botName, msg))
+                # And no need for heartbeat
+                beatControl, nextBeat = nextHeartBeat(beatControl)
             # Timers gone off?
             now = clock()
             if now > finish:
                 break
             if now > nextBeat:
                 beatControl, nextBeat = nextHeartBeat(beatControl)
-                msg = "BEAT * beep!"
+                msg = "BEAT * Beep"
                 channel.write(msg)
                 log.debug("{} {}".format(botName, msg))
         log.info("Lifespan reached")

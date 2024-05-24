@@ -22,8 +22,9 @@ startup = 5
 heartbeat = 10
 
 # Bot output file (not log)
-results = "science.dat"
-
+results = "results.data"
+# Probability that bot will discover something per attempt
+discovery = 0.01
 
 # Multicast channel for group communication
 # Expected to be multicast, but 127.0.0.1 works for testing
@@ -55,6 +56,7 @@ def init(cliArgs):
         "startup":      str(startup),
         "heartbeat":    str(heartbeat),
         "results":      results,
+        "discovery":    str(discovery),
         "chanAddr":     chanAddr,
         "chanPort":     str(chanPort),
         "MAX_PACKET":   str(MAX_PACKET),
@@ -84,5 +86,8 @@ def init(cliArgs):
         log.debug("{} {}".format(name, globals()[name]))
     for name in ("results", "chanAddr",):
         globals()[name] = config.get(name)
+        log.debug("{} {}".format(name, globals()[name]))
+    for name in ("discovery", ):
+        globals()[name] = config.getfloat(name)
         log.debug("{} {}".format(name, globals()[name]))
 
