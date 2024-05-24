@@ -30,17 +30,19 @@ class BasicChannel(object):
     def createSockets(self):
         """Input and output sockets for group channel"""
         # For listening
+        log.debug("Create input socket for {}:{}".format(self.address, self.destPort))
         self.input = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.input.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.input.bind((self.address, self.destPort))
         self.input.settimeout(1.0)
         # Although designed for multicast, can use localhost for testing
         if ipaddress.ip_address(self.address).is_multicast:
+            log.debug("Add membership for {}".format(self.address))
             binAddr = socket.inet_aton(self.address)
-            mreqn = struct.pack('!4sIH', binAddr, socket.INADDR_ANY, 0)
-            self.input.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreqn)
-            log.debug("Added membership for {}".format(self.address))
+            ip_mreqn = struct.pack('!4sIH', binAddr, socket.INADDR_ANY, 0)
+            self.input.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, ip_mreqn)
         # For sending
+        log.debug("Create output socket for {}:{}".format(self.address, self.destPort))
         self.output = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.output.connect((self.address, self.destPort))
         log.debug("BasicChannel sockets created")
@@ -49,8 +51,8 @@ class BasicChannel(object):
         """Close channel"""
         if ipaddress.ip_address(self.address).is_multicast:
             binAddr = socket.inet_aton(self.address)
-            mreqn = struct.pack('!4BIH', *binAddr, socket.INADDR_ANY, 0)
-            self.input.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, mreqn)
+            ip_mreqn = struct.pack('!4sIH', binAddr, socket.INADDR_ANY, 0)
+            self.input.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, ip_mreqn)
         self.input.close()
         self.output.close()
         log.debug("Closed channel")

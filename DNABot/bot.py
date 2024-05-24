@@ -94,7 +94,7 @@ def mainLoop():
             break
         if now > nextBeat:
             beatControl, nextBeat = nextHeartBeat(beatControl)
-            print("{} Beep".format(botName))
+            #print("{} Beep".format(botName))
             channel.write("BEAT * beep!")
     log.info("Lifespan reached")
     channel.close()

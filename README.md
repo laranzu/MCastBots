@@ -14,7 +14,14 @@ keep an eye on progress and upload data from the bots to the server. (Better
 than being the one who has to _test_ the new products.)
 
 The bots all share a common multicast group address, which is also used by
-the supervisor program. (For testing, should also work with 127.0.0.1)
+the supervisor program. For testing, you can run everything on a single host
+with address 127.0.0.1
+
+IMPORTANT: the Fedora/RedHat/CentOS firewalld blocks incoming multicast, so
+the bots and supervisor can send but never receive anything :-( I had to
+    `systemctl stop firewalld`
+during testing.
+
 
 
 #### Running bot

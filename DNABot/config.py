@@ -23,8 +23,8 @@ heartbeat = 10
 
 # Multicast channel for group communication
 # Expected to be multicast, but 127.0.0.1 works for testing
-#chanAddr = "239.1.2.4"
-chanAddr = "127.0.0.1"
+chanAddr = "239.1.2.4"
+#chanAddr = "127.0.0.1"
 # receive port
 chanPort = 8421
 # Maximum expected packet size
