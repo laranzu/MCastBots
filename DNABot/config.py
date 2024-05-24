@@ -21,10 +21,14 @@ startup = 5
 # Bot needs to send at least one message over this many seconds
 heartbeat = 10
 
+# Bot output file (not log)
+results = "science.dat"
+
+
 # Multicast channel for group communication
 # Expected to be multicast, but 127.0.0.1 works for testing
-chanAddr = "239.1.2.4"
-#chanAddr = "127.0.0.1"
+#chanAddr = "239.1.2.4"
+chanAddr = "127.0.0.1"
 # receive port
 chanPort = 8421
 # Maximum expected packet size
@@ -50,6 +54,7 @@ def init(cliArgs):
         "lifespan":     str(lifespan),
         "startup":      str(startup),
         "heartbeat":    str(heartbeat),
+        "results":      results,
         "chanAddr":     chanAddr,
         "chanPort":     str(chanPort),
         "MAX_PACKET":   str(MAX_PACKET),
@@ -77,7 +82,7 @@ def init(cliArgs):
     for name in ("lifespan", "startup", "heartbeat", "chanPort", "MAX_PACKET"):
         globals()[name] = config.getint(name)
         log.debug("{} {}".format(name, globals()[name]))
-    for name in ("chanAddr",):
+    for name in ("results", "chanAddr",):
         globals()[name] = config.get(name)
         log.debug("{} {}".format(name, globals()[name]))
 

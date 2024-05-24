@@ -96,10 +96,10 @@ def mainLoop():
             if now > nextBeat:
                 beatControl, nextBeat = nextHeartBeat(beatControl)
                 msg = "BEAT * beep!"
-                channel.write("BEAT * beep!")
+                channel.write(msg)
                 log.debug("{} {}".format(botName, msg))
         log.info("Lifespan reached")
-    except (KeyboardInterrupt, OSError) as e:
+    except (KeyboardInterrupt, ) as e:
         log.warning("Bot end on exception {}".format(type(e).__name__))
     channel.close()
 
@@ -135,6 +135,9 @@ def initBot(args):
     botName = newName()
     # Now connect to channel
     channel = mcast.BasicChannel(config.chanAddr, config.chanPort, botName)
+    # Init results file
+    f = open(config.results, "wt")
+    f.close()
 
 
 def boot(args):
