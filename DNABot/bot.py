@@ -82,21 +82,25 @@ def mainLoop():
     log.debug("Delay start by {:4.2f}".format(wait))
     time.sleep(wait)
     #
-    now = clock()
-    finish = now + config.lifespan
-    beatControl = now
-    nextBeat = now
-    while True:
-        time.sleep(1)
-        # Timers gone off?
+    try:
         now = clock()
-        if now > finish:
-            break
-        if now > nextBeat:
-            beatControl, nextBeat = nextHeartBeat(beatControl)
-            #print("{} Beep".format(botName))
-            channel.write("BEAT * beep!")
-    log.info("Lifespan reached")
+        finish = now + config.lifespan
+        beatControl = now
+        nextBeat = now
+        while True:
+            time.sleep(1)
+            # Timers gone off?
+            now = clock()
+            if now > finish:
+                break
+            if now > nextBeat:
+                beatControl, nextBeat = nextHeartBeat(beatControl)
+                msg = "BEAT * beep!"
+                channel.write("BEAT * beep!")
+                log.debug("{} {}".format(botName, msg))
+        log.info("Lifespan reached")
+    except (KeyboardInterrupt, OSError) as e:
+        log.warning("Bot end on exception {}".format(type(e).__name__))
     channel.close()
 
 ##
