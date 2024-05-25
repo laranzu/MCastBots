@@ -33,6 +33,11 @@ def clock():
 
 ##
 
+def execCommand(cmd):
+    """Do some checks and send the command over network"""
+    log.debug("Supervisor command {}".format(cmd))
+    print("EXEC", cmd)
+
 def commandLoop():
     """Read and execute commands from console"""
     log.debug("Start command loop")
@@ -44,7 +49,7 @@ def commandLoop():
                 listener.paused = not listener.paused
                 log.debug("Listener paused: {}".format(listener.paused))
             else:
-                print("Exec", command)
+                execCommand(command)
     except (KeyboardInterrupt, EOFError):
         pass
     log.debug("Command loop end")
