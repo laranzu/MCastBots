@@ -14,20 +14,21 @@ keep an eye on progress and upload data from the bots to the server. (Better
 than being the one who has to _test_ the new products.)
 
 The bots all share a common multicast group address, which is also used by
-the supervisor program. For testing, you can run everything on a single host
-with address 127.0.0.1
+the supervisor program.
 
 IMPORTANT: the Fedora/RedHat/CentOS firewalld blocks incoming multicast, so
-the bots and supervisor can send but never receive anything :-( I had to
-    `systemctl stop firewalld`
-during testing.
+the bots and supervisor can send but never receive anything :-( I had to shut
+down my firewall during testing.
+
+For testing, you can run everything on a single host with address 127.0.0.1.
+Everybody can send, but only the last program started will receive.
 
 
 
 #### Running bot
 
 Written as a Python package, so run with `python -m DNABot` from parent
-directory.
+directory. Bots are not interactive.
 
 To run from somewhere else, `export PYTHONPATH="/full/path/to/ASD0231324_247950`
 first. Since this is a Python module rather than a program, don't forget to clear
@@ -60,5 +61,10 @@ This is another Python package, so `python -m Supervisor`
 
 The supervisor borrows some code from DNABot, so if you want to move the code
 somewhere else, copy everything.
+
+The supervisor spends most of its time printing out network traffic. If you
+want to control bots, press Enter to suspend the printout. You can then type
+messages on the command line for sending and see what happens. Enter a blank
+line again when you're done, printout will resume including buffered traffic.
 
 If you want to run more than one supervisor at a time, sure why not?
