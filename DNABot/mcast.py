@@ -6,6 +6,8 @@
     on localhost, not a problem.
     The Plan is to add NACK based reliability in a future version.
 
+    Only one thread should send, only one thread should receive.
+
     See protocol.md for description of packets
 """
 
@@ -59,22 +61,23 @@ class BasicChannel(object):
 
     ##
 
-    def write(self, message):
+    def send(self, message):
         """Prefix with sender and sequence number, send"""
         msg = "{} {} ".format(self.sender, self.seqNo) + message
         #self.output.sendto(msg.encode('UTF-8'), (self.address, self.destPort))
         self.output.send(msg.encode('UTF-8'))
         self.seqNo += 1
 
-    def read(self):
-        """Return next message including header"""
+    def recv(self):
+        """Return next message including header, sender IP"""
         try:
             msg, src = self.input.recvfrom(config.MAX_PACKET)
             if msg is not None:
                 msg = msg.decode('utf-8', 'backslashreplace')
         except (socket.timeout, TimeoutError):
             msg = None
-        return msg
+            src = None
+        return msg, src
 
     ##
 

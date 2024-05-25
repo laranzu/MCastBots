@@ -112,7 +112,7 @@ def mainLoop():
             if doResearch():
                 # Notify everybody
                 msg = "NEWS * Discovery"
-                channel.write(msg)
+                channel.send(msg)
                 log.info("{} {}".format(botName, msg))
                 # And no need for heartbeat
                 beatControl, nextBeat = nextHeartBeat(beatControl)
@@ -123,7 +123,7 @@ def mainLoop():
             if now > nextBeat:
                 beatControl, nextBeat = nextHeartBeat(beatControl)
                 msg = "BEAT * Beep"
-                channel.write(msg)
+                channel.send(msg)
                 log.debug("{} {}".format(botName, msg))
         log.info("Lifespan reached")
     except (KeyboardInterrupt, ) as e:

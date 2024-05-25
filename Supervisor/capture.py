@@ -35,7 +35,7 @@ class Listener(threading.Thread):
                 msg = self.store.pop(0);
                 self.output.write(msg + "\n")
             # New messages?
-            msg = self.channel.read()
+            msg, sender = self.channel.recv()
             now = supervisor.clock()
             if msg is not None:
                 if self.paused:
