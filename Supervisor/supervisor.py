@@ -21,7 +21,7 @@ from . import capture
 # Global state: multicast group and a couple of threads
 
 channel = None
-listener = None
+watcher = None
 
 
 ##
@@ -46,8 +46,8 @@ def commandLoop():
             command = input()
             # Enter by itself pauses / resumes output from capture thread
             if len(command) == 0:
-                listener.paused = not listener.paused
-                log.debug("Listener paused: {}".format(listener.paused))
+                watcher.paused = not watcher.paused
+                log.debug("Watcher paused: {}".format(watcher.paused))
             else:
                 execCommand(command)
     except (KeyboardInterrupt, EOFError):
@@ -85,16 +85,16 @@ def initSupervisor(args):
 
 def main(args):
     """Run supervisor"""
-    global channel, listener
+    global channel, watcher
     #
     initLogging(args)
     config.init(args)
     initSupervisor(args)
     #
-    listener = capture.Listener(channel, sys.stdout)
-    listener.start()
+    watcher = capture.Listener(channel, sys.stdout)
+    watcher.start()
     commandLoop()
     #
-    listener.running = False
-    listener.join()
+    watcher.running = False
+    watcher.join()
     log.info("Supervisor shutdown")
