@@ -15,14 +15,14 @@ import logging as log
 
 from DNABot import config, mcast
 
-from . import capture
+from . import capture, upload
 
 
 # Global state: multicast group and a couple of threads
 
-channel = None
-watcher = None
-
+channel  = None
+watcher  = None
+receiver = None
 
 ##
 
@@ -85,16 +85,20 @@ def initSupervisor(args):
 
 def main(args):
     """Run supervisor"""
-    global channel, watcher
+    global channel, watcher, receiver
     #
     initLogging(args)
     config.init(args)
     initSupervisor(args)
-    #
+    # Threads
     watcher = capture.Listener(channel, sys.stdout)
     watcher.start()
+    receiver = upload.UploadHandler()
+    receiver.start()
     commandLoop()
     #
     watcher.running = False
+    receiver.running = False
     watcher.join()
+    receiver.join()
     log.info("Supervisor shutdown")

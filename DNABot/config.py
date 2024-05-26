@@ -35,6 +35,9 @@ chanPort = 8421
 # Maximum expected packet size
 MAX_PACKET = 1024
 
+# File uploads are TCP to this port
+filePort = 8000
+
 
 ##
 
@@ -60,6 +63,7 @@ def init(cliArgs):
         "chanAddr":     chanAddr,
         "chanPort":     str(chanPort),
         "MAX_PACKET":   str(MAX_PACKET),
+        "filePort":     str(filePort),
     }
     config['DNABot'] = hardWired
     # Read from file, if exists
@@ -81,7 +85,7 @@ def init(cliArgs):
                 pass
     # OK, set global values
     # Need to convert from config string to appropriate types
-    for name in ("lifespan", "startup", "heartbeat", "chanPort", "MAX_PACKET"):
+    for name in ("lifespan", "startup", "heartbeat", "chanPort", "MAX_PACKET", "filePort"):
         globals()[name] = config.getint(name)
         log.debug("{} {}".format(name, globals()[name]))
     for name in ("results", "chanAddr",):
