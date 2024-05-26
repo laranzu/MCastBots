@@ -93,7 +93,7 @@ def main(args):
     # Threads
     watcher = capture.Listener(channel, sys.stdout)
     watcher.start()
-    receiver = upload.UploadHandler()
+    receiver = upload.UploadHandler(sys.stdout)
     receiver.start()
     commandLoop()
     #

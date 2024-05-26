@@ -12,12 +12,13 @@ from . import supervisor
 class UploadHandler(threading.Thread):
     """Handle incoming TCP uploads from bots"""
 
-    def __init__(self):
+    def __init__(self, output):
         """Listen for TCP upload connections, print to output stream"""
         super().__init__()
+        self.output = output
+        self.sock = None
         # Use to end thread
         self.running = True
-        self.sock = None
 
     def receiveFile(self, client):
         """Handle single file upload"""
@@ -43,11 +44,14 @@ class UploadHandler(threading.Thread):
         if len(data) <= 0:
             log.warning("Empty file upload")
             return
+        # Assume it is text
         txt = data.decode('utf-8', 'backslashreplace')
         lines = txt.splitlines(keepends=False)
-        log.info(lines[0])
+        # Log the first line, expected to be HTTP style status response
+        log.info("UPLOAD {}".format(lines[0]))
+        # Print content
         for s in lines:
-            print(s)
+            self.output.write(s + "\n")
 
     def run(self):
         """TCP server"""
