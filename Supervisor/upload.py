@@ -19,6 +19,30 @@ class UploadHandler(threading.Thread):
         self.running = True
         self.sock = None
 
+    def receiveFile(self, client):
+        """Handle single file upload"""
+        # Read binary from socket
+        inData = b''
+        while True:
+            try:
+                chunk = client.recv(config.MAX_PACKET)
+                if len(chunk) == 0:
+                    break
+                inData += chunk
+            except (socket.timeout, TimeoutError):
+                break
+            except OSError as e:
+                log.warning("Upload error {} {}".format(type(e).__name__, e.args))
+                break
+        log.debug("Bot upload socket close")
+        client.close()
+        self.content(inData)
+
+    def content(self, data):
+        """Just print the file to stdout"""
+        txt = data.decode('utf-8', 'backslashreplace')
+        for line in txt.splitlines(keepends=True):
+            print(line)
 
     def run(self):
         """TCP server"""
@@ -27,6 +51,7 @@ class UploadHandler(threading.Thread):
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.sock.bind(("0.0.0.0", config.filePort))
         self.sock.listen(5)
+        # Put timeout on socket so can check self.running
         self.sock.settimeout(2.0)
         log.info("File uploads to {} : {}".format(self.sock.getsockname()[0],
                                         self.sock.getsockname()[1]))
@@ -37,7 +62,8 @@ class UploadHandler(threading.Thread):
                 continue
             except OSError as e:
                 log.warning("Upload accept error {} {}".format(type(e).__name__, e.args))
-            log.debug("Accepted upload from {}".format(clientAddr))
-            client.close()
+                continue
+            log.debug("Accept from {}".format(clientAddr))
+            self.receiveFile(client)
         log.info("End upload handler")
         self.sock.close()
