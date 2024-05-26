@@ -40,9 +40,14 @@ class UploadHandler(threading.Thread):
 
     def content(self, data):
         """Just print the file to stdout"""
+        if len(data) <= 0:
+            log.warning("Empty file upload")
+            return
         txt = data.decode('utf-8', 'backslashreplace')
-        for line in txt.splitlines(keepends=True):
-            print(line)
+        lines = txt.splitlines(keepends=False)
+        log.info(lines[0])
+        for s in lines:
+            print(s)
 
     def run(self):
         """TCP server"""
