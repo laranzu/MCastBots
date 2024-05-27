@@ -18,12 +18,12 @@ import hashlib, time
 import random as RNG
 import logging as log
 
-from . import config, mcast
+from . import config, mcast, receiver
 
 
 # Global state which isn't in config
-botName = None
-channel = None
+botName     = None
+channel     = None
 
 
 # To avoid timezones, leap seconds, daylight saving, ... all bots
@@ -172,4 +172,11 @@ def boot(args):
     initLogging(args)
     config.init(args)
     initBot(args)
+    # Thread for incoming
+    chat = receiver.BotReceiver(channel)
+    chat.start()
     mainLoop()
+    #
+    chat.running = False
+    chat.join()
+    log.info("Bot end program")

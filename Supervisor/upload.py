@@ -13,7 +13,7 @@ class UploadHandler(threading.Thread):
     """Handle incoming TCP uploads from bots"""
 
     def __init__(self, output):
-        """Listen for TCP upload connections, print to output stream"""
+        """Output stream is where uploads are printed"""
         super().__init__()
         self.output = output
         self.sock = None
