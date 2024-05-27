@@ -35,8 +35,18 @@ def clock():
 
 def execCommand(cmd):
     """Do some checks and send the command over network"""
+    fields = cmd.split()
+    if len(fields) < 2:
+        log.warning("Command does not have opcode and dest")
+    # Uppercase opcode
+    fields[0] = fields[0].upper()
+    # Fill in upload filename if not present
+    if fields[0] == "UPLD" and len(fields) < 3:
+        fields.append(config.results)
+    # and send
+    cmd = " ".join(fields)
+    channel.send(cmd)
     log.debug("Supervisor command {}".format(cmd))
-    print("EXEC", cmd)
 
 def commandLoop():
     """Read and execute commands from console"""
