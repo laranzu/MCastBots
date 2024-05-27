@@ -58,6 +58,8 @@ def commandLoop():
             if len(command) == 0:
                 watcher.paused = not watcher.paused
                 log.debug("Watcher paused: {}".format(watcher.paused))
+                if watcher.paused:
+                    print("Command: OPCODE bot ...")
             else:
                 execCommand(command)
     except (KeyboardInterrupt, EOFError):
