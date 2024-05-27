@@ -28,12 +28,12 @@ discovery = 0.01
 
 # Multicast channel for group communication
 # Expected to be multicast, but 127.0.0.1 works for testing
-#chanAddr = "239.1.2.4"
-chanAddr = "127.0.0.1"
+chanAddr = "239.1.2.4"
+#chanAddr = "127.0.0.1"
 # receive port
 chanPort = 8421
 # Maximum expected packet size
-MAX_PACKET = 1024
+PKT_SIZE = 1024
 
 # File uploads are TCP to this port
 filePort = 8000
@@ -62,7 +62,7 @@ def init(cliArgs):
         "discovery":    str(discovery),
         "chanAddr":     chanAddr,
         "chanPort":     str(chanPort),
-        "MAX_PACKET":   str(MAX_PACKET),
+        "PKT_SIZE":     str(PKT_SIZE),
         "filePort":     str(filePort),
     }
     config['DNABot'] = hardWired
@@ -85,7 +85,7 @@ def init(cliArgs):
                 pass
     # OK, set global values
     # Need to convert from config string to appropriate types
-    for name in ("lifespan", "startup", "heartbeat", "chanPort", "MAX_PACKET", "filePort"):
+    for name in ("lifespan", "startup", "heartbeat", "chanPort", "PKT_SIZE", "filePort"):
         globals()[name] = config.getint(name)
         log.debug("{} {}".format(name, globals()[name]))
     for name in ("results", "chanAddr",):

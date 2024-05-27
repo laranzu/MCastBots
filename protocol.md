@@ -51,7 +51,7 @@ actual data stored by bot in a file.
 `PING dest`
 Request bot send an immediate BEAT message.
 
-`UPLD dest portnum filename`
+`UPLD dest filename`
 Request bot to open TCP connection to specified port on sender and
 upload the named file. Most often used to upload bot scientific data,
 but could be config file, source code, etc.

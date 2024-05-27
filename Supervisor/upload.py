@@ -26,7 +26,7 @@ class UploadHandler(threading.Thread):
         inData = b''
         while True:
             try:
-                chunk = client.recv(config.MAX_PACKET)
+                chunk = client.recv(config.PKT_SIZE)
                 if len(chunk) == 0:
                     break
                 inData += chunk

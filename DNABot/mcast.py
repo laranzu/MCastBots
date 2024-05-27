@@ -71,7 +71,7 @@ class BasicChannel(object):
     def recv(self):
         """Return next message including header, sender IP"""
         try:
-            msg, src = self.input.recvfrom(config.MAX_PACKET)
+            msg, src = self.input.recvfrom(config.PKT_SIZE)
             if msg is not None:
                 msg = msg.decode('utf-8', 'backslashreplace')
         except (socket.timeout, TimeoutError):
