@@ -3,7 +3,7 @@
     Does not process messages, just queues for main loop
 """
 
-import socket, threading, time
+import queue, socket, threading, time
 import logging as log
 
 from . import config, mcast
@@ -11,9 +11,10 @@ from . import config, mcast
 class BotReceiver(threading.Thread):
     """Queue up incoming messages for bot"""
 
-    def __init__(self, channel):
+    def __init__(self, channel, messageQueue):
         super().__init__()
         self.channel = channel
+        self.buffer  = messageQueue
         # Use to end thread
         self.running = True
 
@@ -23,8 +24,13 @@ class BotReceiver(threading.Thread):
             # New messages?
             try:
                 msg, sender = self.channel.recv()
-                if msg is not None:
-                    log.debug("Received {}".format(msg))
+                if msg is None:
+                    continue # Timeout
+                log.debug("Received {}".format(msg))
+                try:
+                    self.buffer.put((msg, sender), block=False)
+                except queue.Full:
+                    log.warning("Receiver queue full, drop message")
             except OSError:
                 break
         log.info("End bot receiver")

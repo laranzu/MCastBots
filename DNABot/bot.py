@@ -14,7 +14,7 @@
         -fg             Output to console, not file
 """
 
-import hashlib, time
+import hashlib, queue, time
 import random as RNG
 import logging as log
 
@@ -24,7 +24,7 @@ from . import config, mcast, receiver
 # Global state which isn't in config
 botName     = None
 channel     = None
-
+msgBuffer   = None
 
 # To avoid timezones, leap seconds, daylight saving, ... all bots
 # use a relative clock. Messages will have intervals, not absolute
@@ -154,7 +154,8 @@ def initLogging(args):
 
 def initBot(args):
     """One time startup"""
-    global botName, channel
+    global botName, channel, msgBuffer
+    log.debug("initBot")
     # Don't need cryptographic quality truly random numbers,
     # but bots must not be in lockstep eg for name generation
     RNG.seed(time.perf_counter())
@@ -165,6 +166,8 @@ def initBot(args):
     # Init results file
     f = open(config.results, "wt")
     f.close()
+    # Init message queue
+    msgBuffer = queue.Queue(config.QUEUE_SIZE)
 
 
 def boot(args):
@@ -173,10 +176,10 @@ def boot(args):
     config.init(args)
     initBot(args)
     # Thread for incoming
-    chat = receiver.BotReceiver(channel)
+    chat = receiver.BotReceiver(channel, msgBuffer)
     chat.start()
+    # and run until stopped by something
     mainLoop()
-    #
     chat.running = False
     chat.join()
     log.info("Bot end program")

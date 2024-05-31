@@ -35,6 +35,9 @@ chanPort = 8421
 # Maximum expected packet size
 PKT_SIZE = 1024
 
+# Limit on stored but not processed incoming messages
+QUEUE_SIZE = 512
+
 # File uploads are TCP to this port
 filePort = 8000
 
@@ -63,6 +66,7 @@ def init(cliArgs):
         "chanAddr":     chanAddr,
         "chanPort":     str(chanPort),
         "PKT_SIZE":     str(PKT_SIZE),
+        "QUEUE_SIZE":   str(QUEUE_SIZE),
         "filePort":     str(filePort),
     }
     config['DNABot'] = hardWired
@@ -85,7 +89,7 @@ def init(cliArgs):
                 pass
     # OK, set global values
     # Need to convert from config string to appropriate types
-    for name in ("lifespan", "startup", "heartbeat", "chanPort", "PKT_SIZE", "filePort"):
+    for name in ("lifespan", "startup", "heartbeat", "chanPort", "PKT_SIZE", "QUEUE_SIZE", "filePort"):
         globals()[name] = config.getint(name)
         log.debug("{} {}".format(name, globals()[name]))
     for name in ("results", "chanAddr",):
