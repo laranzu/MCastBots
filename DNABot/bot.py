@@ -74,6 +74,20 @@ def nextHeartBeat(t):
     return beatControl, nextBeat
 
 
+##
+
+
+def sendPing(msg):
+    """Respond to ping request with heartbeat"""
+    # If wildcard, wait random time to avoid congesting channel
+    if msg.dest == "*":
+        time.sleep(RNG.random() * 5)
+    log.debug("Respond to ping")
+    msg = "BEAT * Beep"
+    channel.send(msg)
+    # TODO could update beat timers to wait heartbeat from now
+
+
 def handleMessage(msg):
     """Respond (if needed) to incoming channel messages"""
     # Multicast loopback is on so can test on single host,
@@ -81,7 +95,17 @@ def handleMessage(msg):
     if msg.sender == botName:
         # TODO if sender IP/port is not us, name collision
         return
-    log.debug("{}: {}".format(msg.addrSender, msg))
+    # We see everything, only care about messages to us or wildcard
+    if msg.dest != botName and msg.dest != "*":
+        return
+    # What to do?
+    if msg.opcode == "PING":
+        sendPing(msg)
+    else:
+        log.debug("No handler for {}".format(msg))
+
+
+##
 
 
 def doResearch():
@@ -129,7 +153,7 @@ def mainLoop():
                 # Notify everybody
                 msg = "NEWS * Discovery"
                 channel.send(msg)
-                log.info("{} {}".format(botName, msg))
+                log.info("Bot {} has discovered something".format(botName))
                 # And no need for heartbeat
                 beatControl, nextBeat = nextHeartBeat(beatControl)
             # Timers gone off?
