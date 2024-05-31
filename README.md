@@ -1,9 +1,9 @@
 
 ## ASD Technical Assessment
 
-Written by Hugh/Hugo Fisher \
-AKA laranzu \
-Canberra, Australia \
+Written by Hugh/Hugo Fisher <br/>
+AKA laranzu <br/>
+Canberra, Australia <br/>
 hugo.fisher@gmail.com
 
 Inspired by the Paranoia tabletop roleplaying game. (Which is also my excuse
@@ -16,7 +16,7 @@ than being the one who has to _test_ the new products.)
 The bots all share a common multicast group address, which is also used by
 the supervisor program.
 
-IMPORTANT: the Fedora/RedHat/CentOS firewalld blocks incoming multicast, so
+IMPORTANT: the Fedora/RedHat/CentOS `firewalld` blocks incoming multicast, so
 the bots and supervisor can send but never receive anything :-( I had to shut
 down my firewall during testing.
 
@@ -39,12 +39,12 @@ current directory, ie where you run the program from NOT the DNABot dir. These
 can in turn be overridden by command line args.
 
 
-`-info`     Log level \
+`-info`     Log level <br/>
 `-debug`    Log level
 
 `-fg`       Send output (log) to stdout, not to a file
 
-`-config <filename>`  Use a different config file   \
+`-config <filename>`  Use a different config file  <br/>
 `-name=value`         Override config file
 
 
@@ -62,9 +62,19 @@ This is another Python package, so `python -m Supervisor`
 The supervisor borrows some code from DNABot, so if you want to move the code
 somewhere else, copy everything.
 
-The supervisor spends most of its time printing out network traffic. If you
+The supervisor spends most of its time printing out channel traffic. If you
 want to control bots, press Enter to suspend the printout. You can then type
 messages on the command line for sending and see what happens. Enter a blank
 line again when you're done, printout will resume including buffered traffic.
+
+Messages are `CODE dest [args]` where the CODE is an opcode as described in `protocol.md`
+(You can enter lowercase codes, the supervisor will capitalize before sending.)
+The destination is usually a botname, as shown at the start
+of each printed channel message, but can be a wildcard `*` for all bots.
+
+
+Currently implemented: `PING, UPLD` </br>
+If you don't enter a specific upload file name, the supervisor adds the default
+bot results file.
 
 If you want to run more than one supervisor at a time, sure why not?

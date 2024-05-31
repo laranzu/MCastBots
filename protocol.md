@@ -43,21 +43,22 @@ that this is an informational message, no action required.
 Heartbeat message to indicate that the bot is still running.
 
 `NEWS * text...`
-Bot has discovered a new genetic sequence or something. Just notice,
+Bot has discovered a new genetic sequence or something. Just an alert,
 actual data stored by bot in a file.
 
-**Aspirational**
-
 `PING dest`
-Request bot send an immediate BEAT message.
+Request bot send an immediate BEAT message. Accepts wildcard.
 
 `UPLD dest filename`
-Request bot to open TCP connection to specified port on sender and
-upload the named file. Most often used to upload bot scientific data,
-but could be config file, source code, etc.
+Request bot to open TCP connection to sender and upload the named file.
+Most often used to upload bot scientific data, but could be config file,
+source code, etc; and will show directory listing.
 
-TCP probably will be HTTP response with status code and content type
-descriptor before data.
+Accepts wildcard.
+
+TCP is HTTP response with status code before file content.
+
+**Aspirational**
 
 `RSET dest`
 Request bot to reset itself from configuration file, keeping any
