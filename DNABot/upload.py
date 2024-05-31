@@ -48,12 +48,23 @@ def sendContent(sock, resource, myName):
         data = f.readlines()
         f.close()
         # send
+        log.debug("Sending file content")
         sock.send("200 {}://{}\r\n".format(myName, resource).encode('UTF-8'))
         for line in data:
             line += "\n"
             sock.send(line.encode('UTF-8'))
-        sock.close()
     elif path.isdir(resource):
-        pass
+        try:
+            data = os.listdir(resource)
+        except OSError as e:
+            log.warning("Error listing directory: {} {}".format(type(e).__name__, e.args))
+            sock.send("500 Cannot upload {}://{}\r\n".format(myName, resource).encode('UTF-8'))
+            return
+        data = sorted(data)
+        log.debug("Sending dir list")
+        sock.send("200 {}://{}\r\n".format(myName, resource).encode('UTF-8'))
+        for line in data:
+            line += "\n"
+            sock.send(line.encode('UTF-8'))
     else:
         sock.send("505 Cannot upload {}://{}\r\n".format(myName, resource).encode('UTF-8'))
