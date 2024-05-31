@@ -73,6 +73,11 @@ def nextHeartBeat(t):
     nextBeat = beatControl - RNG.random() * 2
     return beatControl, nextBeat
 
+
+def handleMessage(msg, sender):
+    """Respond (if needed) to incoming channel messages"""
+    log.debug("Message {} from {}".format(msg, sender))
+
 def doResearch():
     """If bot discovers something, update file and return true"""
     if RNG.random() > config.discovery:
@@ -108,6 +113,11 @@ def mainLoop():
         nextBeat = now
         while True:
             time.sleep(1)
+            # Incoming messages?
+            n = msgBuffer.qsize() # Don't handle messages that arrive while we're handling
+            for i in range(0, n):
+                msg, sender = msgBuffer.get()
+                handleMessage(msg, sender)
             # Research?
             if doResearch():
                 # Notify everybody
