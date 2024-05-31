@@ -18,7 +18,7 @@ import hashlib, queue, time
 import random as RNG
 import logging as log
 
-from . import config, mcast, receiver
+from . import config, mcast, receiver, upload
 
 
 # Global state which isn't in config
@@ -101,9 +101,11 @@ def handleMessage(msg):
     # What to do?
     if msg.opcode == "PING":
         sendPing(msg)
+    elif msg.opcode == "UPLD":
+        # Can get complicated so in own module
+        upload.handleRequest(msg)
     else:
-        log.debug("No handler for {}".format(msg))
-
+        log.debug("No handler for {} : {}".format(msg.opcode, msg))
 
 ##
 
