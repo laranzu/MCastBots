@@ -26,7 +26,7 @@ class BotReceiver(threading.Thread):
                 msg, sender = self.channel.recv()
                 if msg is None:
                     continue # Timeout
-                log.debug("Received {}".format(msg))
+                #log.debug("Received {}".format(msg))
                 try:
                     parsed = ChanMessage(msg, sender)
                     self.buffer.put(parsed, block=False)

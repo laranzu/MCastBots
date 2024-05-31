@@ -76,7 +76,13 @@ def nextHeartBeat(t):
 
 def handleMessage(msg):
     """Respond (if needed) to incoming channel messages"""
-    log.debug("Message {} from {}".format(msg, msg.addrSender))
+    # Multicast loopback is on so can test on single host,
+    # but this means we get copies of everything we send.
+    if msg.sender == botName:
+        # TODO if sender IP/port is not us, name collision
+        return
+    log.debug("{}: {}".format(msg.addrSender, msg))
+
 
 def doResearch():
     """If bot discovers something, update file and return true"""
