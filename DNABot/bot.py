@@ -103,7 +103,7 @@ def handleMessage(msg):
         sendPing(msg)
     elif msg.opcode == "UPLD":
         # Can get complicated so in own module
-        upload.handleRequest(msg)
+        upload.handleRequest(msg, botName)
     else:
         log.debug("No handler for {} : {}".format(msg.opcode, msg))
 
