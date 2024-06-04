@@ -27,32 +27,44 @@ class BasicChannel(object):
         self.sender = senderID
         self.seqNo = 1
         self.createSockets()
-        log.info("Connected to group channel {}:{} as {}".format(self.groupAddr, self.destPort, self.sender))
+        log.info("Connected to group channel {} :{} as {}".format(self.groupAddr, self.destPort, self.sender))
 
     def createSockets(self):
         """Input and output sockets for group channel"""
         # For listening
-        log.debug("Create input socket for {}:{}".format(self.groupAddr, self.destPort))
-        self.input = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        log.debug("Create input socket for {} : {}".format(self.groupAddr, self.destPort))
+        if self.groupAddr.version == 6:
+            family = socket.AF_INET6
+        else:
+            family = socket.AF_INET
+        self.input = socket.socket(family, socket.SOCK_DGRAM)
         self.input.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.input.bind((self.groupAddr.compressed, self.destPort))
         self.input.settimeout(1.0)
         # Although designed for multicast, can use localhost for testing
         if self.groupAddr.is_multicast:
             log.debug("Add membership for {}".format(self.groupAddr))
-            ip_mreqn = struct.pack('!4sIH', self.groupAddr.packed, socket.INADDR_ANY, 0)
-            self.input.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, ip_mreqn)
+            if self.groupAddr.version == 6:
+                ipv6_mreq = struct.pack('!16sI', self.groupAddr.packed, 0)
+                self.input.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_JOIN_GROUP, ipv6_mreq)
+            else:
+                ip_mreqn = struct.pack('!4sIH', self.groupAddr.packed, socket.INADDR_ANY, 0)
+                self.input.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, ip_mreqn)
         # For sending
-        log.debug("Create output socket for {}:{}".format(self.groupAddr, self.destPort))
-        self.output = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        log.debug("Create output socket for {} : {}".format(self.groupAddr, self.destPort))
+        self.output = socket.socket(family, socket.SOCK_DGRAM)
         self.output.connect((self.groupAddr.compressed, self.destPort))
         log.debug("BasicChannel sockets created")
 
     def close(self):
         """Close channel"""
         if self.groupAddr.is_multicast:
-            ip_mreqn = struct.pack('!4sIH', self.groupAddr.packed, socket.INADDR_ANY, 0)
-            self.input.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, ip_mreqn)
+            if self.groupAddr.version == 6:
+                ipv6_mreq = struct.pack('!16sI', self.groupAddr.packed, 0)
+                self.input.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_LEAVE_GROUP, ipv6_mreq)
+            else:
+                ip_mreqn = struct.pack('!4sIH', self.groupAddr.packed, socket.INADDR_ANY, 0)
+                self.input.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, ip_mreqn)
         self.input.close()
         self.output.close()
         log.debug("Closed channel")
