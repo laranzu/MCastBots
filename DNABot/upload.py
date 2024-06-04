@@ -2,7 +2,7 @@
     Upload files or whatever from bot to supervisor
 """
 
-import os, socket
+import ipaddress, os, socket
 from os import path
 import logging as log
 
@@ -15,12 +15,15 @@ def handleRequest(msg, myName):
         log.warning("UPLD request without resource name, ignored")
         return
     log.debug("Respond to UPLD")
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    destAddr = ipaddress.ip_address(msg.addrSender[0])
+    if destAddr.version == 6:
+        sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+    else:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # Don't risk hanging around too long
     sock.settimeout(1.0)
     try:
-        destAddr = msg.addrSender[0]
-        sock.connect((destAddr, config.filePort))
+        sock.connect((destAddr.compressed, config.filePort))
         log.debug("Bot upload connection to {} {}".format(sock.getpeername()[0], sock.getpeername()[1]))
         sendContent(sock, msg.args[0], myName)
         sock.close()

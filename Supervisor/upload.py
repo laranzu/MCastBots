@@ -12,11 +12,17 @@ from . import supervisor
 class UploadHandler(threading.Thread):
     """Handle incoming TCP uploads from bots"""
 
-    def __init__(self, output):
-        """Output stream is where uploads are printed"""
+    def __init__(self, channel, output):
+        """Channel so we know IPv4 or IPv6. Output stream is where uploads are printed"""
         super().__init__()
         self.output = output
         self.sock = None
+        if channel.groupAddr.version == 6:
+            self.addrFamily = socket.AF_INET6
+            self.servAddr   = "::"
+        else:
+            self.addrFamily = socket.AF_INET
+            self.servAddr   = "0.0.0.0"
         # Use to end thread
         self.running = True
 
@@ -56,9 +62,9 @@ class UploadHandler(threading.Thread):
     def run(self):
         """TCP server"""
         log.debug("Start upload handler")
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock = socket.socket(self.addrFamily, socket.SOCK_STREAM)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.sock.bind(("0.0.0.0", config.filePort))
+        self.sock.bind((self.servAddr, config.filePort))
         self.sock.listen(5)
         # Put timeout on socket so can check self.running
         self.sock.settimeout(2.0)
