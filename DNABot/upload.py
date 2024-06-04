@@ -9,6 +9,12 @@ import logging as log
 from . import config
 
 
+def sendLine(sock, txt):
+    """Write encoded string with linefeed"""
+    txt += "\n"
+    sock.send(txt.encode('UTF-8'))
+
+
 def handleRequest(msg, myName):
     """Respond to UPLD message"""
     if msg.args is None:
@@ -37,7 +43,7 @@ def handleRequest(msg, myName):
 def sendContent(sock, resource, myName):
     """Upload content of named resource through socket"""
     if not path.exists(resource):
-        sock.send("404 No resource {}://{}\r\n".format(myName, resource).encode('UTF-8'))
+        sendLine(sock, "404 No resource {}:{}".format(myName, resource))
         return
     if path.isfile(resource):
         # Get all the data now. Future version may upload files in parallel with
@@ -46,28 +52,26 @@ def sendContent(sock, resource, myName):
             f = open(resource, "rt")
         except OSError as e:
             log.warning("Error opening file: {} {}".format(type(e).__name__, e.args))
-            sock.send("500 Cannot upload {}://{}\r\n".format(myName, resource).encode('UTF-8'))
+            sendLine(sock, "500 Cannot upload {}:{}".format(myName, resource))
             return
         data = f.readlines()
         f.close()
         # send
         log.debug("Sending file content")
-        sock.send("200 {}://{}\r\n".format(myName, resource).encode('UTF-8'))
+        sendLine(sock, "200 {}:{}\r\n".format(myName, resource))
         for line in data:
-            line += "\n"
-            sock.send(line.encode('UTF-8'))
+            sendLine(sock, line.rstrip())
     elif path.isdir(resource):
         try:
             data = os.listdir(resource)
         except OSError as e:
             log.warning("Error listing directory: {} {}".format(type(e).__name__, e.args))
-            sock.send("500 Cannot upload {}://{}\r\n".format(myName, resource).encode('UTF-8'))
+            sendLine(sock, "500 Cannot upload {}:{}\r\n".format(myName, resource))
             return
         data = sorted(data)
         log.debug("Sending dir list")
-        sock.send("200 {}://{}\r\n".format(myName, resource).encode('UTF-8'))
+        sendLine(sock, "200 {}:{}\r\n".format(myName, resource))
         for line in data:
-            line += "\n"
-            sock.send(line.encode('UTF-8'))
+            sendLine(sock, line)
     else:
-        sock.send("505 Cannot upload {}://{}\r\n".format(myName, resource).encode('UTF-8'))
+        sendLine(sock, "505 Cannot upload {}:{}\r\n".format(myName, resource))

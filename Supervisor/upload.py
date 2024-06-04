@@ -52,12 +52,12 @@ class UploadHandler(threading.Thread):
             return
         # Assume it is text
         txt = data.decode('utf-8', 'backslashreplace')
-        lines = txt.splitlines(keepends=False)
+        lines = txt.splitlines(keepends=True)
         # Log the first line, expected to be HTTP style status response
         log.info("UPLOAD {}".format(lines[0]))
         # Print content
         for s in lines:
-            self.output.write(s + "\n")
+            self.output.write(s)
 
     def run(self):
         """TCP server"""

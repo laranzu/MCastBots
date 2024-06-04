@@ -28,8 +28,8 @@ discovery = 0.01
 
 # Multicast channel for group communication
 # Expected to be multicast, but 127.0.0.1 works for testing
-#chanAddr = "239.1.2.4"
-chanAddr = "ff05:0::ef:1:2:4"
+chanAddr = "239.1.2.4"
+#chanAddr = "ff05:0::ef:1:2:4"
 #chanAddr = "127.0.0.1"
 #chanAddr = "::1"
 # receive port
