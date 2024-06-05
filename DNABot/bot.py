@@ -110,9 +110,9 @@ def handleMessage(msg):
 ##
 
 
-def doResearch():
+def doResearch(delta):
     """If bot discovers something, update file and return true"""
-    if RNG.random() > config.discovery:
+    if RNG.random() > config.discovery * delta:
         return False
     products = (
         "Bouncy Bubbly Beverage additive",
@@ -143,6 +143,7 @@ def mainLoop():
         finish = now + config.lifespan
         beatControl = now
         nextBeat = now
+        prev = now
         while True:
             time.sleep(1)
             # Incoming messages?
@@ -150,8 +151,11 @@ def mainLoop():
             for i in range(0, n):
                 msg = msgBuffer.get()
                 handleMessage(msg)
+            # How much time has passed since last cycle?
+            now = clock()
+            delta = now - prev
             # Research?
-            if doResearch():
+            if doResearch(delta):
                 # Notify everybody
                 msg = "NEWS * Discovery"
                 channel.send(msg)
@@ -159,7 +163,6 @@ def mainLoop():
                 # And no need for heartbeat
                 beatControl, nextBeat = nextHeartBeat(beatControl)
             # Timers gone off?
-            now = clock()
             if now > finish:
                 break
             if now > nextBeat:
@@ -167,6 +170,8 @@ def mainLoop():
                 msg = "BEAT * Beep"
                 channel.send(msg)
                 log.debug("{} {}".format(botName, msg))
+            # ready for next
+            prev = now
         log.info("Lifespan reached")
     except (KeyboardInterrupt, ) as e:
         log.warning("Bot end on exception {}".format(type(e).__name__))
