@@ -62,10 +62,10 @@ This is another Python package, so `python -m Supervisor`
 The supervisor borrows some code from DNABot, so if you want to move the code
 somewhere else, copy everything.
 
-The supervisor spends most of its time printing out channel traffic. If you
-want to control bots, press Enter to suspend the printout. You can then type
-messages on the command line for sending and see what happens. Enter a blank
-line again when you're done, printout will resume including buffered traffic.
+The supervisor spends most of its time printing out channel traffic. You can
+type messages on the command line for sending at any time, slightly easier
+if you first enter a blank line to suspend the printout. (Press Enter again
+when you want to resume.)
 
 Messages are `CODE dest [args]` where the CODE is an opcode as described in `protocol.md`
 (You can enter lowercase codes, the supervisor will capitalize before sending.)

@@ -23,7 +23,7 @@ heartbeat = 10
 
 # Bot output file (not log)
 results = "results.data"
-# Probability that bot will discover something per attempt
+# Probability that bot will discover something per second
 discovery = 0.01
 
 # Multicast channel for group communication
