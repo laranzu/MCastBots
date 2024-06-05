@@ -17,7 +17,7 @@ class UploadHandler(threading.Thread):
         super().__init__()
         self.output = output
         self.sock = None
-        if channel.groupAddr.version == 6:
+        if channel.address.version == 6:
             self.addrFamily = socket.AF_INET6
             self.servAddr   = "::"
         else:
