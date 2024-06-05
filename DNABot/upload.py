@@ -58,7 +58,7 @@ def sendContent(sock, resource, myName):
         f.close()
         # send
         log.debug("Sending file content")
-        sendLine(sock, "200 {}:{}\r\n".format(myName, resource))
+        sendLine(sock, "200 {}:{}".format(myName, resource))
         for line in data:
             sendLine(sock, line.rstrip())
     elif path.isdir(resource):
@@ -66,12 +66,12 @@ def sendContent(sock, resource, myName):
             data = os.listdir(resource)
         except OSError as e:
             log.warning("Error listing directory: {} {}".format(type(e).__name__, e.args))
-            sendLine(sock, "500 Cannot upload {}:{}\r\n".format(myName, resource))
+            sendLine(sock, "500 Cannot upload {}:{}".format(myName, resource))
             return
         data = sorted(data)
         log.debug("Sending dir list")
-        sendLine(sock, "200 {}:{}\r\n".format(myName, resource))
+        sendLine(sock, "200 {}:{}".format(myName, resource))
         for line in data:
             sendLine(sock, line)
     else:
-        sendLine(sock, "505 Cannot upload {}:{}\r\n".format(myName, resource))
+        sendLine(sock, "505 Cannot upload {}:{}".format(myName, resource))

@@ -58,6 +58,8 @@ class UploadHandler(threading.Thread):
         # Print content
         for s in lines:
             self.output.write(s)
+        if len(lines) == 1:
+            self.output.write("EOF\n")
 
     def run(self):
         """TCP server"""
