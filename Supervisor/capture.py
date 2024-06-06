@@ -47,11 +47,21 @@ class Listener(threading.Thread):
         else:
             self.output.write(str(msg) + "\n")
 
-    def reportActive(self):
+    def reportActive(self, timestamp):
         """Check how many bots have joined or left"""
         if self.nMsgs == 0:
             self.output.write("Channel is quiet...\n")
         self.nMsgs = 0
+        # Anyone stopped?
+        for name in list(self.members.keys()):
+            # Don't test ourself (or any other human)
+            if name == self.channel.sender:
+                continue
+            latest = self.members[name]
+            t = latest[0]
+            if t + config.heartbeat * INTERVALS < timestamp:
+                log.debug("Age out {}".format(name))
+                del self.members[name]
 
     def run(self):
         """Listen to bot activity"""
@@ -63,12 +73,12 @@ class Listener(threading.Thread):
                 msg = self.store.pop(0);
                 self.output.write(msg + "\n")
             # New messages?
-            msg, src = self.channel.recv()
             now = supervisor.clock()
+            msg, src = self.channel.recv()
             if msg is not None:
                 self.handleMessage(msg, src, now)
             # Regular check?
             if now > nextReport and not self.paused:
-                self.reportActive()
+                self.reportActive(now)
                 nextReport += config.heartbeat * INTERVALS
         log.info("End bot traffic watcher")
