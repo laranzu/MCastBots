@@ -20,7 +20,7 @@ def handleRequest(msg, myName):
     if msg.args is None:
         log.warning("UPLD request without resource name, ignored")
         return
-    log.debug("Respond to UPLD")
+    log.debug("Respond to {}".format(msg))
     destAddr = ipaddress.ip_address(msg.addrSender[0])
     if destAddr.version == 6:
         sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
