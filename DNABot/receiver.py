@@ -46,9 +46,9 @@ class BotReceiver(threading.Thread):
 class ChanMessage(object):
     """Parsed channel message as record with named fields"""
 
-    def __init__(self, message, ipAddr):
+    def __init__(self, message, ipSource):
         """Create message, or raise ValueError if message not in right format"""
-        self.addrSender = ipAddr
+        self.addrSender = ipSource
         # Try to parse
         fields = message.split()
         if len(fields) < 4:
