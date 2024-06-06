@@ -110,10 +110,9 @@ def handleMessage(msg):
     elif msg.opcode == "UPLD":
         # Can get complicated so in own module
         upload.handleRequest(msg, botName)
-    elif msg.opcode in ("BEAT",):
-        pass
-    else:
+    elif msg.opcode not in ("BEAT",):
         log.debug("No handler for {} : {}".format(msg.opcode, msg))
+
 
 ##
 
