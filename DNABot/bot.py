@@ -59,6 +59,14 @@ def newName():
     name = name.upper()
     return name
 
+def handleCollision(msg):
+    """Group name collision detected"""
+    global botName, channel
+    #
+    log.debug("Name collision for {} from {}".format(botName, msg.addrSender))
+    # Just rename ourself
+    botName = newName()
+    channel.rename(botName)
 
 ##
 
@@ -91,8 +99,8 @@ def sendPing(msg):
 def handleMessage(msg):
     """Respond (if needed) to incoming channel messages"""
     if msg.sender == botName:
-        # TODO name collision
-        return
+        handleCollision(msg)
+        # And keep going, respond as usual
     # We see everything, only care about messages to us or wildcard
     if msg.dest != botName and msg.dest != "*":
         return
@@ -102,6 +110,8 @@ def handleMessage(msg):
     elif msg.opcode == "UPLD":
         # Can get complicated so in own module
         upload.handleRequest(msg, botName)
+    elif msg.opcode in ("BEAT",):
+        pass
     else:
         log.debug("No handler for {} : {}".format(msg.opcode, msg))
 
