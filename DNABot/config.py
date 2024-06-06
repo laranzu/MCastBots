@@ -95,7 +95,8 @@ def init(cliArgs):
         globals()[name] = config.getint(name)
         log.debug("{} {}".format(name, globals()[name]))
     for name in ("results", "chanAddr",):
-        globals()[name] = config.get(name)
+        # Remove quotes, since I keep making this mistake
+        globals()[name] = config.get(name).strip("\"\'")
         log.debug("{} {}".format(name, globals()[name]))
     for name in ("discovery", ):
         globals()[name] = config.getfloat(name)
