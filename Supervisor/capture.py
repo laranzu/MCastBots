@@ -29,6 +29,19 @@ class Listener(threading.Thread):
         # Tracking activity on channel
         self.nMsgs = 0
 
+    def handleMessage(self, msg, sender):
+        """Print or store incoming messages"""
+        self.nMsgs += 1
+        if self.paused:
+            self.store.append(msg)
+        else:
+            self.output.write(msg + "\n")
+
+    def reportActive(self):
+        """Check how many bots have joined or left"""
+        if self.nMsgs == 0:
+            self.output.write("Channel is quiet...\n")
+        self.nMsgs = 0
 
     def run(self):
         """Listen to bot activity"""
@@ -43,15 +56,9 @@ class Listener(threading.Thread):
             msg, sender = self.channel.recv()
             now = supervisor.clock()
             if msg is not None:
-                self.nMsgs += 1
-                if self.paused:
-                    self.store.append(msg)
-                else:
-                    self.output.write(msg + "\n")
+                self.handleMessage(msg, sender)
             # Regular check?
             if now > nextReport and not self.paused:
-                if self.nMsgs == 0:
-                    self.output.write("Channel is quiet...\n")
-                self.nMsgs = 0
+                self.reportActive()
                 nextReport += config.heartbeat * INTERVALS
         log.info("End bot traffic watcher")
