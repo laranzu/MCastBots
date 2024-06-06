@@ -6,7 +6,7 @@
 import threading, time
 import logging as log
 
-from DNABot import config, mcast
+from DNABot import config, mcast, receiver
 
 from . import supervisor
 
@@ -28,14 +28,24 @@ class Listener(threading.Thread):
         self.store = [] # Only used within thread, doesn't need to be queue
         # Tracking activity on channel
         self.nMsgs = 0
+        self.members = {}
 
-    def handleMessage(self, msg, sender):
+    def handleMessage(self, text, src, timestamp):
         """Print or store incoming messages"""
+        try:
+            msg = receiver.ChanMessage(text, src)
+            prev = self.members.get(msg.sender, None)
+            if prev is None:
+                log.debug("New sender {}".format(msg.sender))
+            self.members[msg.sender] = (timestamp, msg.seqNo)
+        except ValueError:
+            log.warning("Invalid message: {}".format(text))
+            # Don't return: print it anyway
         self.nMsgs += 1
         if self.paused:
-            self.store.append(msg)
+            self.store.append(str(msg))
         else:
-            self.output.write(msg + "\n")
+            self.output.write(str(msg) + "\n")
 
     def reportActive(self):
         """Check how many bots have joined or left"""
@@ -53,10 +63,10 @@ class Listener(threading.Thread):
                 msg = self.store.pop(0);
                 self.output.write(msg + "\n")
             # New messages?
-            msg, sender = self.channel.recv()
+            msg, src = self.channel.recv()
             now = supervisor.clock()
             if msg is not None:
-                self.handleMessage(msg, sender)
+                self.handleMessage(msg, src, now)
             # Regular check?
             if now > nextReport and not self.paused:
                 self.reportActive()
