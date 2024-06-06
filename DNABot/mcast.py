@@ -22,10 +22,11 @@ class BasicChannel(object):
 
     def __init__(self, IPaddress, portNumber, senderID):
         """Create and connect new socket for group address"""
-        self.address = ipaddress.ip_address(IPaddress)
+        self.address  = ipaddress.ip_address(IPaddress)
         self.destPort = portNumber
-        self.sender = senderID
-        self.seqNo = 1
+        self.sender   = senderID
+        self.srcAddr  = ("", 0)
+        self.seqNo    = 1
         self.createSockets()
         log.info("Connected to group channel {} : {} as {}".format(self.address, self.destPort, self.sender))
 
@@ -54,6 +55,9 @@ class BasicChannel(object):
         log.debug("Create output socket for {} : {}".format(self.address, self.destPort))
         self.output = socket.socket(family, socket.SOCK_DGRAM)
         self.output.connect((self.address.compressed, self.destPort))
+        # Want own source address for detecting loopbacks and name collisions
+        self.srcAddr = self.output.getsockname()
+        #
         log.debug("BasicChannel sockets created")
 
     def close(self):
@@ -74,7 +78,6 @@ class BasicChannel(object):
     def send(self, message):
         """Prefix with sender and sequence number, send"""
         msg = "{} {} ".format(self.sender, self.seqNo) + message
-        #self.output.sendto(msg.encode('UTF-8'), (self.address, self.destPort))
         self.output.send(msg.encode('UTF-8'))
         self.seqNo += 1
 

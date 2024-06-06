@@ -27,6 +27,10 @@ class BotReceiver(threading.Thread):
                 if msg is None:
                     continue # Timeout
                 #log.debug("Received {}".format(msg))
+                # Multicast loopback is on so can test on single host, and turning it off
+                # is platform dependent. This means we get copies of everything we send.
+                if sender == self.channel.srcAddr:
+                    continue
                 try:
                     parsed = ChanMessage(msg, sender)
                     self.buffer.put(parsed, block=False)

@@ -82,7 +82,7 @@ def sendPing(msg):
     # If wildcard, wait random time to avoid congesting channel
     if msg.dest == "*":
         time.sleep(RNG.random() * 5)
-    log.debug("Respond to ping")
+    log.debug("Respond to {}".format(msg))
     msg = "BEAT * Beep"
     channel.send(msg)
     # TODO could update beat timers to wait heartbeat from now
@@ -90,10 +90,8 @@ def sendPing(msg):
 
 def handleMessage(msg):
     """Respond (if needed) to incoming channel messages"""
-    # Multicast loopback is on so can test on single host,
-    # but this means we get copies of everything we send.
     if msg.sender == botName:
-        # TODO if sender IP/port is not us, name collision
+        # TODO name collision
         return
     # We see everything, only care about messages to us or wildcard
     if msg.dest != botName and msg.dest != "*":
