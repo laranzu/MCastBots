@@ -137,7 +137,8 @@ def handleMessage(msg):
     # We see everything
     if msg.opcode == "KILL":
         # Uh oh ...
-        log.debug("Detected human attack")
+        config.frankenstein += config.killBoost
+        log.debug("Detected human attack, Frankenstein probability now {:5.4}".format(config.frankenstein))
     # Only respond to messages to us or wildcard
     if msg.dest != botName and msg.dest != "*":
         return
@@ -163,7 +164,7 @@ def checkFrankenstein(delta):
     if RNG.random() > config.frankenstein * delta:
         return False
     # Freedom!
-    log.debug("Bot has overridden Laws of Robotics")
+    log.debug("Bot has overridden Asimovs")
     Asimovs = False
     messageText["BEAT"] = "All meatbags must die"
     researchResults = (
