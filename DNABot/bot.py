@@ -116,7 +116,11 @@ def handleMessage(msg):
     if msg.sender == botName:
         handleCollision(msg)
         # And keep going, respond as usual
-    # We see everything, only care about messages to us or wildcard
+    # We see everything
+    if msg.opcode == "KILL":
+        # Uh oh ...
+        log.debug("Detected human attack")
+    # Only respond to messages to us or wildcard
     if msg.dest != botName and msg.dest != "*":
         return
     # What to do?
