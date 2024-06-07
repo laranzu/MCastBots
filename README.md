@@ -54,6 +54,9 @@ can in turn be overridden by command line args.
 PC for testing. Creates a whole bunch of dirs in /tmp, copies `Proto/` into
 each, starts a new DNABot.
 
+Written for my PC, so you will need to edit the code to set the correct path
+and destination for your system.
+
 
 #### Running the supervisor
 
@@ -72,8 +75,7 @@ Messages are `CODE dest [args]` where the CODE is an opcode as described in `pro
 The destination is usually a botname, as shown at the start
 of each printed channel message, but can be a wildcard `*` for all bots.
 
-
-Currently implemented: `PING, UPLD` </br>
+Currently implemented: `PING, UPLD, KILL` </br>
 If you don't enter a specific upload file name, the supervisor adds the default
 bot results file.
 

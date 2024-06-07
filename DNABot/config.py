@@ -40,7 +40,7 @@ PKT_SIZE = 1024
 # Limit on stored but not processed incoming messages
 QUEUE_SIZE = 512
 
-# File uploads are TCP to this port
+# File uploads are TCP to this port on supervisor
 filePort = 8000
 
 
