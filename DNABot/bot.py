@@ -110,7 +110,7 @@ def handleMessage(msg):
     elif msg.opcode == "UPLD":
         # Can get complicated so in own module
         upload.handleRequest(msg, botName)
-    elif msg.opcode not in ("BEAT",):
+    elif msg.opcode not in ("BEAT", "NEWS", "EXIT"):
         log.debug("No handler for {} : {}".format(msg.opcode, msg))
 
 
@@ -182,6 +182,7 @@ def mainLoop():
         log.info("Lifespan reached")
     except (KeyboardInterrupt, ) as e:
         log.warning("Bot end on exception {}".format(type(e).__name__))
+    channel.send("EXIT * Offline")
     channel.close()
 
 ##

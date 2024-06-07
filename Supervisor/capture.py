@@ -41,6 +41,10 @@ class Listener(threading.Thread):
         except ValueError:
             log.warning("Invalid message: {}".format(text))
             # Don't return: print it anyway
+        # Special case
+        if msg.opcode == "EXIT":
+            log.debug("Remove sender {}".format(msg.sender))
+            del self.members[msg.sender]
         self.nMsgs += 1
         if self.paused:
             self.store.append(str(msg))

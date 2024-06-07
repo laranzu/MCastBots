@@ -46,6 +46,9 @@ Heartbeat message to indicate that the bot is still running.
 Bot has discovered a new genetic sequence or something. Just an alert,
 actual data stored by bot in a file.
 
+`EXIT * text...`
+Bot is leaving the channel. Don't count on this always being sent.
+
 `PING dest`
 Request bot send an immediate BEAT message. Accepts wildcard.
 
