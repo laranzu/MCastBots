@@ -6,6 +6,8 @@ AKA laranzu <br/>
 Canberra, Australia <br/>
 hugo.fisher@gmail.com
 
+Version 1.0
+
 Inspired by the Paranoia tabletop roleplaying game. (Which is also my excuse
 for rushed coding and complete lack of security.) The clients are R&D robots,
 using recombinant genetic engineering to create new DNA therapies, pollution
