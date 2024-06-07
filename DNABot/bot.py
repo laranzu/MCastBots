@@ -21,11 +21,27 @@ import logging as log
 from . import config, mcast, receiver, upload
 
 
-# Global state which isn't in config
+# Global state
 botName     = None
 channel     = None
 msgBuffer   = None
 chatThread  = None
+
+# Added to sent messages
+messageText = {
+    "BEAT": "Beep",
+    "NEWS": "Discovery",
+    "EXIT": "Offline",
+}
+
+researchResults = (
+    "Bouncy Bubbly Beverage additive",
+    "Cherenkov cellular damage lotion",
+    "Plastic eating algae",
+    "Soup decontaminant",
+    "Synthetic probiotic supplement",
+    )
+
 
 # To avoid timezones, leap seconds, daylight saving, ... all bots
 # use a relative clock. Messages will have intervals, not absolute
@@ -92,7 +108,7 @@ def sendPing(msg):
     if msg.dest == "*":
         time.sleep(RNG.random() * config.backoff)
     log.debug("Respond to {}".format(msg))
-    msg = "BEAT * Beep"
+    msg = "BEAT * " + messageText["BEAT"]
     channel.send(msg)
     # TODO could update beat timers to wait heartbeat from now
 
@@ -105,7 +121,6 @@ def selfDestruct(msg):
     f.close()
     # Thread shutdown
     chatThread.running = False
-    chatThread.join(1.0)
     # And exit
     sys.exit(-1)
 
@@ -140,16 +155,11 @@ def handleMessage(msg):
 
 def doResearch(delta):
     """If bot discovers something, update file and return true"""
+    global researchResults
+    #
     if RNG.random() > config.discovery * delta:
         return False
-    products = (
-        "Bouncy Bubbly Beverage additive",
-        "Cherenkov cellular damage lotion",
-        "Plastic eating algae",
-        "Soup decontaminant",
-        "Synthetic probiotic supplement",
-        )
-    result = RNG.choice(products)
+    result = RNG.choice(researchResults)
     # Append to file
     f = open(config.results, "at")
     f.write(result + "\n")
@@ -185,7 +195,7 @@ def mainLoop():
             # Research?
             if doResearch(delta):
                 # Notify everybody
-                msg = "NEWS * Discovery"
+                msg = "NEWS * " + messageText["NEWS"]
                 channel.send(msg)
                 log.info("Bot {} has discovered something".format(botName))
                 # And no need for heartbeat
@@ -203,7 +213,7 @@ def mainLoop():
         log.info("Lifespan reached")
     except (KeyboardInterrupt, ) as e:
         log.warning("Bot end on exception {}".format(type(e).__name__))
-    channel.send("EXIT * Offline")
+    channel.send("EXIT * " + messageText["EXIT"])
     channel.close()
 
 ##
