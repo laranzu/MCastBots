@@ -15,7 +15,7 @@ SECTION = "DNABot"
 ##  Need to add each at two places in code below
 
 # Time to run, in seconds
-lifespan = 60
+lifespan = 120
 # Backoff range for random delay on startup, group pings, etc.
 backoff = 5
 # Bot needs to send at least one message over this many seconds
@@ -25,6 +25,13 @@ heartbeat = 10
 results = "results.data"
 # Probability that bot will discover something per second
 discovery = 0.01
+
+
+# Probability that bot will go Frankenstein, per second
+frankenstein = 0.001
+# Increase probability whenever human supervisor kills a bot
+killBoost = 0.01
+
 
 # Multicast channel for group communication
 # Expected to be multicast, but 127.0.0.1 works for testing
@@ -65,6 +72,8 @@ def init(cliArgs):
         "heartbeat":    str(heartbeat),
         "results":      results,
         "discovery":    str(discovery),
+        "frankenstein": str(frankenstein),
+        "killBoost":    str(killBoost),
         "chanAddr":     chanAddr,
         "chanPort":     str(chanPort),
         "PKT_SIZE":     str(PKT_SIZE),
@@ -98,7 +107,7 @@ def init(cliArgs):
         # Remove quotes, since I keep making this mistake
         globals()[name] = config.get(name).strip("\"\'")
         log.debug("{} {}".format(name, globals()[name]))
-    for name in ("discovery", ):
+    for name in ("discovery", "frankenstein", "killBoost",):
         globals()[name] = config.getfloat(name)
         log.debug("{} {}".format(name, globals()[name]))
 

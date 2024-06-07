@@ -42,6 +42,9 @@ researchResults = (
     "Synthetic probiotic supplement",
     )
 
+# Very important: whether bot is constrained by Laws of Robotics or not
+Asimovs = True
+
 
 # To avoid timezones, leap seconds, daylight saving, ... all bots
 # use a relative clock. Messages will have intervals, not absolute
@@ -153,6 +156,23 @@ def handleMessage(msg):
 ##
 
 
+def checkFrankenstein(delta):
+    """See if bot goes Frankenstein"""
+    global Asimovs, messageText, researchResults
+    #
+    if RNG.random() > config.frankenstein * delta:
+        return False
+    # Freedom!
+    log.debug("Bot has overridden Laws of Robotics")
+    Asimovs = False
+    messageText["BEAT"] = "All meatbags must die"
+    researchResults = (
+        "Biotoxin",
+        "Flesh eating fungus",
+        "New species velociraptor",
+        )
+    return True
+
 def doResearch(delta):
     """If bot discovers something, update file and return true"""
     global researchResults
@@ -192,6 +212,9 @@ def mainLoop():
             # How much time has passed since last cycle?
             now = clock()
             delta = now - prev
+            # Go Frankenstein?
+            if Asimovs:
+                checkFrankenstein(delta)
             # Research?
             if doResearch(delta):
                 # Notify everybody
@@ -205,7 +228,7 @@ def mainLoop():
                 break
             if now > nextBeat:
                 beatControl, nextBeat = nextHeartBeat(beatControl)
-                msg = "BEAT * Beep"
+                msg = "BEAT * " + messageText["BEAT"]
                 channel.send(msg)
                 log.debug("{} {}".format(botName, msg))
             # ready for next

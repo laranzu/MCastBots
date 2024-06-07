@@ -80,3 +80,15 @@ If you don't enter a specific upload file name, the supervisor adds the default
 bot results file.
 
 If you want to run more than one supervisor at a time, sure why not?
+
+
+#### Going Frankenstein
+
+_"Sometimes we go bad."_ Cameron, The Sarah Connor Chronicles.
+
+Bots are supposed to be constrained by "Asimovs", in built Laws of Robotics.
+If a bot manages to hack itself and escape control they become dangerous.
+Supervisors can activate the remote self destruct with the `KILL` command,
+but this makes other bots
+nervous and more likely to go Frankenstein themselves. So maybe it is better
+to just let the bots do their thing.

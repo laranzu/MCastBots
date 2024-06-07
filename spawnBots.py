@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-# Program to run lots of DNABots, each in own temp dir
+# Program to run lots of DNABots, each in own temp dir.
+# You probably want to change the arguments and PYTHONPATH
 
 # Usage: ./spawnBots.py N
 
@@ -37,7 +38,7 @@ for i in range(1, N + 1):
     shutil.copytree("./Proto", fullPath)
     # Run
     subprocess.Popen(
-        ["/usr/bin/python", "-m", "DNABot", "-debug"],
+        ["/usr/bin/python", "-m", "DNABot", "-debug",],
         cwd=fullPath,
         env={ "PYTHONPATH": "/home/hugh/Progs/ASD/ASD0231324_247950" },
         )
