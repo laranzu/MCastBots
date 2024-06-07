@@ -2,8 +2,9 @@
     Upload files or whatever from bot to supervisor
 """
 
-import ipaddress, os, socket
+import ipaddress, os, socket, time
 from os import path
+import random as RNG
 import logging as log
 
 from . import config
@@ -20,6 +21,9 @@ def handleRequest(msg, myName):
     if msg.args is None:
         log.warning("UPLD request without resource name, ignored")
         return
+    # Don't all hit the server at once
+    if msg.dest == "*":
+        time.sleep(RNG.random() * config.backoff)
     log.debug("Respond to {}".format(msg))
     destAddr = ipaddress.ip_address(msg.addrSender[0])
     if destAddr.version == 6:

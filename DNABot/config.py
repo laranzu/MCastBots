@@ -16,8 +16,8 @@ SECTION = "DNABot"
 
 # Time to run, in seconds
 lifespan = 60
-# Max delay at start
-startup = 5
+# Backoff range for random delay on startup, group pings, etc.
+backoff = 5
 # Bot needs to send at least one message over this many seconds
 heartbeat = 10
 
@@ -61,7 +61,7 @@ def init(cliArgs):
     # Default values
     hardWired = {
         "lifespan":     str(lifespan),
-        "startup":      str(startup),
+        "backoff":      str(backoff),
         "heartbeat":    str(heartbeat),
         "results":      results,
         "discovery":    str(discovery),
@@ -91,7 +91,7 @@ def init(cliArgs):
                 pass
     # OK, set global values
     # Need to convert from config string to appropriate types
-    for name in ("lifespan", "startup", "heartbeat", "chanPort", "PKT_SIZE", "QUEUE_SIZE", "filePort"):
+    for name in ("lifespan", "backoff", "heartbeat", "chanPort", "PKT_SIZE", "QUEUE_SIZE", "filePort"):
         globals()[name] = config.getint(name)
         log.debug("{} {}".format(name, globals()[name]))
     for name in ("results", "chanAddr",):

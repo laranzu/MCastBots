@@ -89,7 +89,7 @@ def sendPing(msg):
     """Respond to ping request with heartbeat"""
     # If wildcard, wait random time to avoid congesting channel
     if msg.dest == "*":
-        time.sleep(RNG.random() * 5)
+        time.sleep(RNG.random() * config.backoff)
     log.debug("Respond to {}".format(msg))
     msg = "BEAT * Beep"
     channel.send(msg)
@@ -141,7 +141,7 @@ def mainLoop():
     """Run bot for lifespan seconds"""
     log.info("Bot {} activated".format(botName))
     # Don't want all bots starting at once
-    wait = RNG.random() * config.startup
+    wait = RNG.random() * config.backoff
     log.debug("Delay start by {:4.2f}".format(wait))
     time.sleep(wait)
     #
