@@ -61,16 +61,16 @@ Accepts wildcard.
 
 TCP is HTTP response with status code before file content.
 
+`KILL dest`
+Activate bot self-destruct, removing both bot and any research results.
+Supervisors are advised to use only when absolutely necessary as it makes
+the other bots nervous. If the dest is * everything shuts down.
+
 **Aspirational**
 
 `RSET dest`
 Request bot to reset itself from configuration file, keeping any
 created scientific data.
-
-`KILL dest`
-Activate bot self-destruct, removing both bot and any research results.
-Supervisors are advised to use only when absolutely necessary as it makes
-the other bots nervous. If the dest is * everything shuts down.
 
 
 #### Reliable multicast opcodes
@@ -85,5 +85,5 @@ Resend in response to NACK. Usually expected to be the original sender,
 but any bot with a copy of the packet can do so.
 
 `SKIP sender sequenceNumber`
-Indicate that missing packet was a BEAT, NACK, or RSND that does not
-need retransmission, or that original message wasn't saved or something.
+Indicate that missing packet was a BEAT or something that does not
+need retransmission, or that original message wasn't saved.

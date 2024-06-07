@@ -14,7 +14,7 @@
         -fg             Output to console, not file
 """
 
-import hashlib, queue, time
+import hashlib, queue, sys, time
 import random as RNG
 import logging as log
 
@@ -25,6 +25,7 @@ from . import config, mcast, receiver, upload
 botName     = None
 channel     = None
 msgBuffer   = None
+chatThread  = None
 
 # To avoid timezones, leap seconds, daylight saving, ... all bots
 # use a relative clock. Messages will have intervals, not absolute
@@ -96,6 +97,20 @@ def sendPing(msg):
     # TODO could update beat timers to wait heartbeat from now
 
 
+def selfDestruct(msg):
+    """Remote shutdown"""
+    log.debug("Self destruct order {}".format(msg))
+    # Clear results file
+    f = open(config.results, "wt")
+    f.close()
+    # Thread shutdown
+    chatThread.running = False
+    chatThread.join(1.0)
+    # And exit
+    sys.exit(-1)
+
+
+
 def handleMessage(msg):
     """Respond (if needed) to incoming channel messages"""
     if msg.sender == botName:
@@ -110,6 +125,8 @@ def handleMessage(msg):
     elif msg.opcode == "UPLD":
         # Can get complicated so in own module
         upload.handleRequest(msg, botName)
+    elif msg.opcode == "KILL":
+        selfDestruct(msg)
     elif msg.opcode not in ("BEAT", "NEWS", "EXIT"):
         log.debug("No handler for {} : {}".format(msg.opcode, msg))
 
@@ -227,14 +244,16 @@ def initBot(args):
 
 def boot(args):
     """Run DNABot"""
+    global chatThread
+    #
     initLogging(args)
     config.init(args)
     initBot(args)
     # Thread for incoming
-    chat = receiver.BotReceiver(channel, msgBuffer)
-    chat.start()
+    chatThread = receiver.BotReceiver(channel, msgBuffer)
+    chatThread.start()
     # and run until stopped by something
     mainLoop()
-    chat.running = False
-    chat.join()
+    chatThread.running = False
+    chatThread.join()
     log.info("Bot end program")
