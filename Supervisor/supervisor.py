@@ -12,6 +12,7 @@
 import sys, threading, time
 import random as RNG
 import logging as log
+import builtins, gettext, pathlib
 
 from DNABot import config, mcast
 
@@ -91,6 +92,10 @@ def initSupervisor(args):
     global channel
     # 
     RNG.seed(time.perf_counter())
+    # Set up language translations, shared in parent
+    progDir = pathlib.Path(__file__).parents[1]
+    translator = gettext.translation("messages", localedir=pathlib.Path(progDir, "I18N"), fallback=True)
+    builtins.__dict__["tr"] = translator.gettext
     # Connect to channel
     channel = mcast.BasicChannel(config.chanAddr, config.chanPort, "HUMAN")
 
