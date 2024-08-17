@@ -39,7 +39,7 @@ class Listener(threading.Thread):
                 log.debug("New sender {}".format(msg.sender))
             self.members[msg.sender] = (timestamp, msg.seqNo)
         except ValueError:
-            log.warning("Invalid message: {}".format(text))
+            log.warning(tr("Invalid message: {}".format(text)))
             # Don't return: print it anyway
         # Special case
         if msg.opcode == "EXIT":
@@ -54,7 +54,7 @@ class Listener(threading.Thread):
     def reportActive(self, timestamp):
         """Check how many bots have joined or left"""
         if self.nMsgs == 0:
-            self.output.write("Channel is quiet...\n")
+            self.output.write(tr("Channel is quiet...\n"))
         self.nMsgs = 0
         # Anyone stopped?
         for name in list(self.members.keys()):

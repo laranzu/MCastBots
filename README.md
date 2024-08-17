@@ -30,7 +30,7 @@ Everybody can send, but only the last program started will receive.
 #### Running bot
 
 Written as a Python package, so run with `python -m DNABot` from parent
-directory. Bots are not interactive.
+directory. Bots are not interactive, but I recommend `-fg` for testing.
 
 To run from somewhere else, `export PYTHONPATH="/full/path/to/ASD0231324_247950`
 first. Since this is a Python module rather than a program, don't forget to clear
@@ -94,3 +94,12 @@ Supervisors can activate the remote self destruct with the `KILL` command,
 but this makes other bots
 nervous and more likely to go Frankenstein themselves. So maybe it is better
 to just let the bots do their thing.
+
+
+#### Translation
+
+`I18N` has commands and data for translating into other languages.
+
+Both the bot and supervisor will **run** with just the standard Python library.
+To make a new translation or update existing you will need the `babel` Python
+package.

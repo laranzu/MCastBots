@@ -1,2 +1,4 @@
 *.log
+*.pot
+*.mo
 __pycache__/

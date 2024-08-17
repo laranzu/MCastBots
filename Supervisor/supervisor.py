@@ -38,7 +38,7 @@ def execCommand(cmd):
     """Do some checks and send the command over network"""
     fields = cmd.split()
     if len(fields) < 2:
-        log.warning("Command does not have opcode and dest")
+        log.warning(tr("Command does not have opcode and dest"))
     # Uppercase opcode
     fields[0] = fields[0].upper()
     # Fill in upload filename if not present
@@ -60,7 +60,7 @@ def commandLoop():
                 watcher.paused = not watcher.paused
                 log.debug("Watcher paused: {}".format(watcher.paused))
                 if watcher.paused:
-                    print("Command: OPCODE bot ...")
+                    print(tr("Command: OPCODE bot ..."))
             else:
                 execCommand(command)
     except (KeyboardInterrupt, EOFError):

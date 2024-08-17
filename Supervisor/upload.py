@@ -39,7 +39,7 @@ class UploadHandler(threading.Thread):
             except (socket.timeout, TimeoutError):
                 break
             except OSError as e:
-                log.warning("Upload error {} {}".format(type(e).__name__, e.args))
+                log.warning(tr("Upload error {} {}").format(type(e).__name__, e.args))
                 break
         log.debug("Bot upload socket close")
         client.close()
@@ -48,7 +48,7 @@ class UploadHandler(threading.Thread):
     def content(self, data):
         """Just print the file to stdout"""
         if len(data) <= 0:
-            log.warning("Empty file upload")
+            log.warning(tr("Empty file upload"))
             return
         # Assume it is text
         txt = data.decode('utf-8', 'backslashreplace')
@@ -78,7 +78,7 @@ class UploadHandler(threading.Thread):
             except (socket.timeout, TimeoutError):
                 continue
             except OSError as e:
-                log.warning("Upload accept error {} {}".format(type(e).__name__, e.args))
+                log.warning(tr("Upload accept error {} {}").format(type(e).__name__, e.args))
                 continue
             log.debug("Accept from {}".format(clientAddr))
             self.receiveFile(client)
