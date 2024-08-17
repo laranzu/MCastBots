@@ -19,8 +19,10 @@ install:
 pot:
 	pybabel extract -F babel.cfg -k tr -o $(MSGS) ..
 
-fr:
+fr: FORCE
 	mkdir -p $(ATD)/fr/LC_MESSAGES
 	touch $(ATD)/fr/LC_MESSAGES/messages.po
 	pybabel update -i $(MSGS) -d $(ATD) -l fr
+
+FORCE:
 

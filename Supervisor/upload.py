@@ -54,7 +54,7 @@ class UploadHandler(threading.Thread):
         txt = data.decode('utf-8', 'backslashreplace')
         lines = txt.splitlines(keepends=True)
         # Log the first line, expected to be HTTP style status response
-        log.info("UPLOAD {}".format(lines[0]))
+        log.info(tr("UPLOAD {}").format(lines[0]))
         # Print content
         for s in lines:
             self.output.write(s)
@@ -70,7 +70,7 @@ class UploadHandler(threading.Thread):
         self.sock.listen(5)
         # Put timeout on socket so can check self.running
         self.sock.settimeout(2.0)
-        log.info("File uploads to {} : {}".format(self.sock.getsockname()[0],
+        log.info(tr("File uploads to {} : {}").format(self.sock.getsockname()[0],
                                         self.sock.getsockname()[1]))
         while self.running:
             try:
@@ -82,5 +82,5 @@ class UploadHandler(threading.Thread):
                 continue
             log.debug("Accept from {}".format(clientAddr))
             self.receiveFile(client)
-        log.info("End upload handler")
+        log.info(tr("End upload handler"))
         self.sock.close()

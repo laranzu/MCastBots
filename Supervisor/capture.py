@@ -85,4 +85,4 @@ class Listener(threading.Thread):
             if now > nextReport and not self.paused:
                 self.reportActive(now)
                 nextReport += config.heartbeat * INTERVALS
-        log.info("End bot traffic watcher")
+        log.info(tr("End bot traffic watcher"))

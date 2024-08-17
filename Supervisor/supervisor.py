@@ -118,4 +118,4 @@ def main(args):
     receiver.running = False
     watcher.join()
     receiver.join()
-    log.info("Supervisor shutdown")
+    log.info(tr("Supervisor shutdown"))
