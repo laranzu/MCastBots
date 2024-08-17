@@ -40,7 +40,7 @@ class Listener(threading.Thread):
             self.members[msg.sender] = (timestamp, msg.seqNo)
         except ValueError:
             log.warning(tr("Invalid message: {}".format(text)))
-            # Don't return: print it anyway
+            return
         # Special case
         if msg.opcode == "EXIT":
             log.debug("Remove sender {}".format(msg.sender))
