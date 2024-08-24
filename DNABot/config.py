@@ -82,7 +82,7 @@ def init(cliArgs):
     }
     config['DNABot'] = hardWired
     # Read from file, if exists
-    log.info("Try reading config file {}".format(fileName))
+    log.debug("Try reading config file {}".format(fileName))
     config.read(fileName)
     # We only care about one section
     config = config['DNABot']

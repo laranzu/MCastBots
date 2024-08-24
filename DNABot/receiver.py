@@ -37,10 +37,10 @@ class BotReceiver(threading.Thread):
                 except ValueError:
                     log.debug("Invalid format, drop message")
                 except queue.Full:
-                    log.warning("Receiver queue full, drop message")
+                    log.warning(tr("Receiver queue full, drop message"))
             except OSError:
                 break
-        log.info("End bot receiver")
+        log.info(tr("End bot receiver"))
 
 
 class ChanMessage(object):
@@ -52,11 +52,11 @@ class ChanMessage(object):
         # Try to parse
         fields = message.split()
         if len(fields) < 4:
-            raise ValueError("Channel message must be sender sequenceNumber opcode destination ...")
+            raise ValueError(tr("Channel message must be sender sequenceNumber opcode destination ..."))
         self.sender = fields[0]
         self.seqNo = int(fields[1]) # Will raise ValueError if not an int
         if self.seqNo < 0:
-            raise ValueError("Channel message has negative sequence number")
+            raise ValueError(tr("Channel message has negative sequence number"))
         self.opcode = fields[2]
         self.dest = fields[3]
         if len(fields) > 4:

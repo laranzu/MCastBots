@@ -103,3 +103,6 @@ to just let the bots do their thing.
 Both the bot and supervisor will **run** with just the standard Python library.
 To make a new translation or update existing you will need the `babel` Python
 package.
+
+Information, warning, error strings are all marked for translation. Debug
+messages are not because all the code and comments are in English.
