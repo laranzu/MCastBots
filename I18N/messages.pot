@@ -1,18 +1,15 @@
-# French translations for ASD Bots.
+# Translations template for ASD Bots.
 # Copyright (C) 2024 EvilAliens, Inc
 # This file is distributed under the same license as the project.
 # Hugo Fisher <hugo.fisher@gmail.com>, 2024.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version:  1.1\n"
+"Project-Id-Version: 1.1\n"
 "Report-Msgid-Bugs-To: hugo.fisher@gmail.com\n"
-"POT-Creation-Date: 2024-08-24 20:16+1000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2024-08-17 19:01+1000\n"
 "Last-Translator: Hugo Fisher <hugo.fisher@gmail.com>\n"
-"Language: fr\n"
-"Language-Team: fr <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,173 +17,173 @@ msgstr ""
 
 #: ../DNABot/bot.py:36
 msgid "Beep"
-msgstr "Bip"
+msgstr ""
 
 #: ../DNABot/bot.py:37
 msgid "Discovery"
-msgstr "Découverte"
+msgstr ""
 
 #: ../DNABot/bot.py:38
 msgid "Offline"
-msgstr "Hors ligne"
+msgstr ""
 
 #: ../DNABot/bot.py:42
 msgid "Bouncy Bubbly Beverage additive"
-msgstr "Rebondissante Pétillant Boisson additif"
+msgstr ""
 
 #: ../DNABot/bot.py:43
 msgid "Cherenkov cellular damage lotion"
-msgstr "Lotion à dommages Cherenkov cellulaire"
+msgstr ""
 
 #: ../DNABot/bot.py:44
 msgid "Plastic eating algae"
-msgstr "Algues à mangent plastique"
+msgstr ""
 
 #: ../DNABot/bot.py:45
 msgid "Soup decontaminant"
-msgstr "Decontiminant de potage"
+msgstr ""
 
 #: ../DNABot/bot.py:46
 msgid "Synthetic probiotic supplement"
-msgstr "Supplément protéique synthétique"
+msgstr ""
 
 #: ../DNABot/bot.py:175
 msgid "All meatbags must die"
-msgstr "Tuer tous les sacs de viande"
+msgstr ""
 
 #: ../DNABot/bot.py:177
 msgid "Biotoxin"
-msgstr "Biotoxin"
+msgstr ""
 
 #: ../DNABot/bot.py:178
 msgid "Flesh eating fungus"
-msgstr "Champignons à mangent chair"
+msgstr ""
 
 #: ../DNABot/bot.py:179
 msgid "New species velociraptor"
-msgstr "Nouvelle espèce de velociraptor"
+msgstr ""
 
 #: ../DNABot/bot.py:200
 msgid "Bot {} activated"
-msgstr "Bot {} activé"
+msgstr ""
 
 #: ../DNABot/bot.py:230
 msgid "Bot {} has discovered something"
-msgstr "Bot {} à découvert quelque chose"
+msgstr ""
 
 #: ../DNABot/bot.py:243
 msgid "Lifespan reached"
-msgstr "Durée de vie atteinte"
+msgstr ""
 
 #: ../DNABot/bot.py:245
 msgid "Bot end on exception {}"
-msgstr "Bot cesse exception {}"
+msgstr ""
 
 #: ../DNABot/bot.py:307
 msgid "Bot end program"
-msgstr "Bot fin du programme"
+msgstr ""
 
 #: ../DNABot/mcast.py:31
 msgid "Connected to group channel {} : {} as {}"
-msgstr "Connexion à groupe chaîne {} : {} comme {}"
+msgstr ""
 
 #: ../DNABot/receiver.py:40
 msgid "Receiver queue full, drop message"
-msgstr "File de récepteur pleine, renoncer à message"
+msgstr ""
 
 #: ../DNABot/receiver.py:43
 msgid "End bot receiver"
-msgstr "Cesser récepteur de bot"
+msgstr ""
 
 #: ../DNABot/receiver.py:55
 msgid "Channel message must be sender sequenceNumber opcode destination ..."
-msgstr "Message de chaîne doit être numéro de séquence, opcode, destination ..."
+msgstr ""
 
 #: ../DNABot/receiver.py:59
 msgid "Channel message has negative sequence number"
-msgstr "Message de chaîne a numéro de séquence negatif"
+msgstr ""
 
 #: ../DNABot/upload.py:22
 msgid "UPLD request without resource name, ignored"
-msgstr "UPLD demande sans nom de la ressource, ignoré"
+msgstr ""
 
 #: ../DNABot/upload.py:41
 msgid "Upload socket timed out"
-msgstr "Socket de téléchargement a été chronométré"
+msgstr ""
 
 #: ../DNABot/upload.py:43
 msgid "Upload socket exception: {} {}"
-msgstr "Erreur d'acceptation de téléchargement {} {}"
+msgstr ""
 
 #: ../DNABot/upload.py:50
 msgid "404 No resource {}:{}"
-msgstr "404 Aucun ressource {}:{}"
+msgstr ""
 
 #: ../DNABot/upload.py:58
 msgid "Error opening file: {} {}"
-msgstr "Erreur en ouverture du fichier: {} {}"
+msgstr ""
 
 #: ../DNABot/upload.py:59 ../DNABot/upload.py:73
 msgid "500 Cannot upload {}:{}"
-msgstr "500 Ne peut pas télécharge {}:{}"
+msgstr ""
 
 #: ../DNABot/upload.py:65 ../DNABot/upload.py:77
 msgid "200 {}:{}"
-msgstr "200 {}:{}"
+msgstr ""
 
 #: ../DNABot/upload.py:72
 msgid "Error listing directory: {} {}"
-msgstr "Erreur en listant dossier"
+msgstr ""
 
 #: ../DNABot/upload.py:81
 msgid "505 Cannot upload {}:{}"
-msgstr "505 Ne peut pas télécharge {}:{}"
+msgstr ""
 
 #: ../Supervisor/capture.py:42
 msgid "Invalid message: {}"
-msgstr "Message invalide: {}"
+msgstr ""
 
 #: ../Supervisor/capture.py:57
 msgid "Channel is quiet...\n"
-msgstr "Chaîne est silencieuse...\n"
+msgstr ""
 
 #: ../Supervisor/capture.py:88
 msgid "End bot traffic watcher"
-msgstr "Cesser l'observateur des bots"
+msgstr ""
 
 #: ../Supervisor/supervisor.py:41
 msgid "Command does not have opcode and dest"
-msgstr "Commande n'a pas de code d'opération ni de destination"
+msgstr ""
 
 #: ../Supervisor/supervisor.py:63
 msgid "Command: OPCODE bot ..."
-msgstr "Commande: OPCODE bot ..."
+msgstr ""
 
 #: ../Supervisor/supervisor.py:121
 msgid "Supervisor shutdown"
-msgstr "Superviseur éteint"
+msgstr ""
 
 #: ../Supervisor/upload.py:42
 msgid "Upload error {} {}"
-msgstr "Erreur de téléchargement {} {}"
+msgstr ""
 
 #: ../Supervisor/upload.py:51
 msgid "Empty file upload"
-msgstr "Téléchargement de fichier vide"
+msgstr ""
 
 #: ../Supervisor/upload.py:57
 msgid "UPLOAD {}"
-msgstr "TÉLÉCHARGER {}"
+msgstr ""
 
 #: ../Supervisor/upload.py:73
 msgid "File uploads to {} : {}"
-msgstr "Téléchargement de fichiers à {} : {}"
+msgstr ""
 
 #: ../Supervisor/upload.py:81
 msgid "Upload accept error {} {}"
-msgstr "Erreur d'acceptation de téléchargement {} {}"
+msgstr ""
 
 #: ../Supervisor/upload.py:85
 msgid "End upload handler"
-msgstr "Cesser téléchargement"
+msgstr ""
 

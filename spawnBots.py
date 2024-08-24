@@ -38,9 +38,10 @@ for i in range(1, N + 1):
     shutil.copytree("./Proto", fullPath)
     # Run
     subprocess.Popen(
-        ["/usr/bin/python", "-m", "DNABot", "-debug",],
+        ["/usr/bin/python", "-m", "DNABot", "-debug", "-fg" ],
         cwd=fullPath,
-        env={ "PYTHONPATH": "/home/hugh/Progs/ASD/ASD0231324_247950" },
+        env={ "PYTHONPATH": "/home/hugh/Progs/ASD/ASD0231324_247950",
+              "LANG": "fr_FR.UTF-8" },
         )
     print("Bot #{} in {}".format(i, fullPath))
 

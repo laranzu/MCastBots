@@ -28,7 +28,7 @@ class BasicChannel(object):
         self.srcAddr  = ("", 0)
         self.seqNo    = 1
         self.createSockets()
-        log.info("Connected to group channel {} : {} as {}".format(self.address, self.destPort, self.sender))
+        log.info(tr("Connected to group channel {} : {} as {}").format(self.address, self.destPort, self.sender))
 
     def createSockets(self):
         """Input and output sockets for group channel"""

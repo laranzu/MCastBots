@@ -186,7 +186,7 @@ def doResearch(delta):
     #
     if RNG.random() > config.discovery * delta:
         return False
-    result = RNG.choice(researchResults)
+    result = tr(RNG.choice(researchResults))
     # Append to file
     f = open(config.results, "at")
     f.write(result + "\n")
@@ -225,7 +225,7 @@ def mainLoop():
             # Research?
             if doResearch(delta):
                 # Notify everybody
-                msg = "NEWS * " + messageText["NEWS"]
+                msg = "NEWS * " + tr(messageText["NEWS"])
                 channel.send(msg)
                 log.info(tr("Bot {} has discovered something").format(botName))
                 # And no need for heartbeat
@@ -235,7 +235,7 @@ def mainLoop():
                 break
             if now > nextBeat:
                 beatControl, nextBeat = nextHeartBeat(beatControl)
-                msg = "BEAT * " + messageText["BEAT"]
+                msg = "BEAT * " + tr(messageText["BEAT"])
                 channel.send(msg)
                 log.debug("{} {}".format(botName, msg))
             # ready for next
@@ -243,7 +243,7 @@ def mainLoop():
         log.info(tr("Lifespan reached"))
     except (KeyboardInterrupt, ) as e:
         log.warning(tr("Bot end on exception {}").format(type(e).__name__))
-    channel.send("EXIT * " + messageText["EXIT"])
+    channel.send("EXIT * " + tr(messageText["EXIT"]))
     channel.close()
 
 ##
