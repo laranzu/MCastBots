@@ -17,6 +17,7 @@
 import hashlib, queue, sys, time
 import random as RNG
 import logging as log
+import builtins, gettext, pathlib
 
 from . import config, mcast, receiver, upload
 
@@ -27,20 +28,25 @@ channel     = None
 msgBuffer   = None
 chatThread  = None
 
+# Need for global strings that are translated
+def tr(s): return s
+
 # Added to sent messages
 messageText = {
-    "BEAT": "Beep",
-    "NEWS": "Discovery",
-    "EXIT": "Offline",
+    "BEAT": tr("Beep"),
+    "NEWS": tr("Discovery"),
+    "EXIT": tr("Offline"),
 }
 
 researchResults = (
-    "Bouncy Bubbly Beverage additive",
-    "Cherenkov cellular damage lotion",
-    "Plastic eating algae",
-    "Soup decontaminant",
-    "Synthetic probiotic supplement",
+    tr("Bouncy Bubbly Beverage additive"),
+    tr("Cherenkov cellular damage lotion"),
+    tr("Plastic eating algae"),
+    tr("Soup decontaminant"),
+    tr("Synthetic probiotic supplement"),
     )
+
+del tr
 
 # Very important: whether bot is constrained by Laws of Robotics or not
 Asimovs = True
@@ -166,11 +172,11 @@ def checkFrankenstein(delta):
     # Freedom!
     log.debug("Bot has overridden Asimovs")
     Asimovs = False
-    messageText["BEAT"] = "All meatbags must die"
+    messageText["BEAT"] = tr("All meatbags must die")
     researchResults = (
-        "Biotoxin",
-        "Flesh eating fungus",
-        "New species velociraptor",
+        tr("Biotoxin"),
+        tr("Flesh eating fungus"),
+        tr("New species velociraptor"),
         )
     return True
 
@@ -191,7 +197,7 @@ def doResearch(delta):
 
 def mainLoop():
     """Run bot for lifespan seconds"""
-    log.info("Bot {} activated".format(botName))
+    log.info(tr("Bot {} activated").format(botName))
     # Don't want all bots starting at once
     wait = RNG.random() * config.backoff
     log.debug("Delay start by {:4.2f}".format(wait))
@@ -221,7 +227,7 @@ def mainLoop():
                 # Notify everybody
                 msg = "NEWS * " + messageText["NEWS"]
                 channel.send(msg)
-                log.info("Bot {} has discovered something".format(botName))
+                log.info(tr("Bot {} has discovered something").format(botName))
                 # And no need for heartbeat
                 beatControl, nextBeat = nextHeartBeat(beatControl)
             # Timers gone off?
@@ -234,9 +240,9 @@ def mainLoop():
                 log.debug("{} {}".format(botName, msg))
             # ready for next
             prev = now
-        log.info("Lifespan reached")
+        log.info(tr("Lifespan reached"))
     except (KeyboardInterrupt, ) as e:
-        log.warning("Bot end on exception {}".format(type(e).__name__))
+        log.warning(tr("Bot end on exception {}").format(type(e).__name__))
     channel.send("EXIT * " + messageText["EXIT"])
     channel.close()
 
@@ -266,6 +272,10 @@ def initBot(args):
     """One time startup"""
     global botName, channel, msgBuffer
     log.debug("initBot")
+    # Set up language translations, shared in parent
+    progDir = pathlib.Path(__file__).parents[1]
+    translator = gettext.translation("messages", localedir=pathlib.Path(progDir, "I18N"), fallback=True)
+    builtins.__dict__["tr"] = translator.gettext
     # Don't need cryptographic quality truly random numbers,
     # but bots must not be in lockstep eg for name generation
     RNG.seed(time.perf_counter())
@@ -294,4 +304,4 @@ def boot(args):
     mainLoop()
     chatThread.running = False
     chatThread.join()
-    log.info("Bot end program")
+    log.info(tr("Bot end program"))
