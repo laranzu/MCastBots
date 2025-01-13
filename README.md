@@ -106,3 +106,11 @@ package.
 
 Information, warning, error strings are all marked for translation. Debug
 messages are not because all the code and comments are in English.
+
+
+#### Plans
+
+Handle lost messages. Since multicast on my own PC is very reliable, will
+add a network setting to simulate packet loss.
+
+Java version? Good interoperability test
