@@ -1,26 +1,46 @@
 
-## ASD Technical Assessment
+## Multicast Peer to Peer Demo in Python
 
 Written by Hugh/Hugo Fisher <br/>
 AKA laranzu <br/>
 Canberra, Australia <br/>
 hugo.fisher@gmail.com
 
+Released under MIT License
+
 Version 1.0
 
-Inspired by the Paranoia tabletop roleplaying game. (Which is also my excuse
-for rushed coding and complete lack of security.) The clients are R&D robots,
-using recombinant genetic engineering to create new DNA therapies, pollution
-eating algae, and fast food flavours. The bots are supervised by humans who
-keep an eye on progress and upload data from the bots to the server. (Better
-than being the one who has to _test_ the new products.)
+This was an Australian Signals Directorate technical assessment. I applied for
+a job there, was instructed to write the code for a peer to peer system and
+push it to a GitHub repo. I did so and never heard from ASD again. So if you
+are here because you are also applying to ASD, I wouldn't copy the code.
 
-The bots all share a common multicast group address, which is also used by
-the supervisor program.
+This is a peer to peer system, meaning that there is no server that every
+other program connects to like a web site or Gmail. All the peers are
+identical programs that communicate over an IP multicast group address.
+This is very Ship of Theseus, any peer can join or leave at any time, but
+the group persists while at least one is active on the multicast address.
 
-IMPORTANT: the Fedora/RedHat/CentOS `firewalld` blocks incoming multicast, so
-the bots and supervisor can send but never receive anything :-( I had to shut
-down my firewall during testing.
+My system is inspired by the Paranoia tabletop roleplaying game, so the
+peers represent bots (robots) using recombinant genetic engineering to research
+new DNA therapies, pollution eating algae, and fast food flavours. Every so
+often a bot makes a discovery and announces this on the multicast group, and
+all the bots send heartbeat packets at regular intervals.
+
+Supervisors are a second type of program, representing the humans who keep an
+eye on progress and upload data from the bots. (Better than being the humans
+who have to _test_ the new products.) Supervisor programs also use the
+multicast group address to discover bots by listening to announcements or
+active pings, requesting bots to send their data to the supervisor, and even
+shutting down bots. Since they are also "peers", supervisors can come and go,
+and there can be more than one supervisor running at the same time.
+
+
+IMPORTANT: the Fedora/RedHat/CentOS `firewalld` or local equivalent may block
+incoming multicast, if so the bots and supervisor can send but never receive
+anything :-( I changed to the "Workstation" profile which is for developers
+and thus allows most traffic, or you could just shut down the firewall for
+testing. (Not on your production system, right?)
 
 For testing, you can run everything on a single host with address 127.0.0.1.
 Everybody can send, but only the last program started will receive.
@@ -32,7 +52,7 @@ Everybody can send, but only the last program started will receive.
 Written as a Python package, so run with `python -m DNABot` from parent
 directory. Bots are not interactive, but I recommend `-fg` for testing.
 
-To run from somewhere else, `export PYTHONPATH="/full/path/to/ASD0231324_247950`
+To run from somewhere else, `export PYTHONPATH="/full/path/to/MCastBots`
 first. Since this is a Python module rather than a program, don't forget to clear
 `__pycache__` first if you've changed any of the imports.
 

@@ -1,6 +1,6 @@
 
 """
-    Main program for bot supervisor, ASD technical challenge program.
+    Main program for bot supervisor, multicast peer to peer demo
 
     Shares configuration and multicast code with DNABot.
 

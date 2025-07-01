@@ -1,4 +1,4 @@
-# Translations template for ASD Bots.
+# Translations template for MCastBots.
 # Copyright (C) 2024 EvilAliens, Inc
 # This file is distributed under the same license as the project.
 # Hugo Fisher <hugo.fisher@gmail.com>, 2024.

@@ -40,8 +40,9 @@ for i in range(1, N + 1):
     subprocess.Popen(
         ["/usr/bin/python", "-m", "DNABot", "-debug", "-fg" ],
         cwd=fullPath,
-        env={ "PYTHONPATH": "/home/hugh/Progs/ASD/ASD0231324_247950",
-              "LANG": "fr_FR.UTF-8" },
+        env={ "PYTHONPATH": "/home/hugh/Progs/MCastBots",
+            # "LANG": "fr_FR.UTF-8",
+            },
         )
     print("Bot #{} in {}".format(i, fullPath))
 
