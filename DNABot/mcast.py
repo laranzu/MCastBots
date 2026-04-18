@@ -55,8 +55,9 @@ class BasicChannel(object):
         log.debug("Create output socket for {} : {}".format(self.address, self.destPort))
         self.output = socket.socket(family, socket.SOCK_DGRAM)
         self.output.connect((self.address.compressed, self.destPort))
-        # Want own source address for detecting loopbacks and name collisions
-        self.srcAddr = self.output.getsockname()
+        # Want own source address for detecting loopbacks and name collisions,
+        # but just address and port, no IPv6 flow and scope
+        self.srcAddr = self.output.getsockname()[0:2]
         #
         log.debug("BasicChannel sockets created")
 
@@ -87,6 +88,9 @@ class BasicChannel(object):
             msg, src = self.input.recvfrom(config.PKT_SIZE)
             if msg is not None:
                 msg = msg.decode('utf-8', 'backslashreplace')
+            # Strip flow and scope from IPv6 address so just addr, port like IPv4
+            if self.address.version == 6:
+                src = src[0:2]
         except (socket.timeout, TimeoutError):
             msg = None
             src = None
