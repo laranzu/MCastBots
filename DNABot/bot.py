@@ -282,7 +282,7 @@ def initBot(args):
     # Need unique identifier for network messages.
     botName = newName()
     # Now connect to channel
-    channel = mcast.BasicChannel(config.chanAddr, config.chanPort, botName)
+    channel = mcast.BasicChannel(config.chanAddr, config.chanPort, botName, config.chanIface)
     # Init results file
     f = open(config.results, "wt")
     f.close()

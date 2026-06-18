@@ -38,6 +38,8 @@ chanAddr = "239.1.2.4"
 #chanAddr = "ff05::ef:1:2:4"
 # receive port
 chanPort = 8421
+# Optional interface identified by IP address
+chanIface = ""
 # Maximum expected packet size
 PKT_SIZE = 1024
 
@@ -73,6 +75,7 @@ def init(cliArgs):
         "killBoost":    str(killBoost),
         "chanAddr":     chanAddr,
         "chanPort":     str(chanPort),
+        "chanIface":    chanIface,
         "PKT_SIZE":     str(PKT_SIZE),
         "QUEUE_SIZE":   str(QUEUE_SIZE),
         "filePort":     str(filePort),
@@ -100,9 +103,14 @@ def init(cliArgs):
     for name in ("lifespan", "backoff", "heartbeat", "chanPort", "PKT_SIZE", "QUEUE_SIZE", "filePort"):
         globals()[name] = config.getint(name)
         log.debug("{} {}".format(name, globals()[name]))
-    for name in ("results", "chanAddr",):
+    for name in ("results", "chanAddr", "chanIface"):
         # Remove quotes, since I keep making this mistake
-        globals()[name] = config.get(name).strip("\"\'")
+        s  = config.get(name).strip("\"\'")
+        # Special case empty string
+        if s:
+            globals()[name] = s
+        else:
+            globals()[name] = None
         log.debug("{} {}".format(name, globals()[name]))
     for name in ("discovery", "frankenstein", "killBoost",):
         globals()[name] = config.getfloat(name)
