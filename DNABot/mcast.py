@@ -2,8 +2,7 @@
     Multicast group protocol for bots and supervisors.
     Not a channel in the CSP sense, I just watch a lot of science fiction.
 
-    Basic unreliable multicast for now - since I'm running my tests
-    on localhost, not a problem.
+    Basic unreliable multicast for now.
     The Plan is to add NACK based reliability in a future version.
 
     Only one thread should send, only one thread should receive.
@@ -20,10 +19,11 @@ from . import config
 class BasicChannel(object):
     """Multicast group communication channel"""
 
-    def __init__(self, IPaddress, portNumber, senderID):
+    def __init__(self, IPaddress, portNumber, senderID, iface=None):
         """Create and connect new socket for group address"""
         self.address  = ipaddress.ip_address(IPaddress)
         self.destPort = portNumber
+        self.iface    = iface
         self.sender   = senderID
         self.srcAddr  = ("", 0)
         self.seqNo    = 1
@@ -34,42 +34,55 @@ class BasicChannel(object):
         """Input and output sockets for group channel"""
         # For listening
         log.debug("Create input socket for {} : {}".format(self.address, self.destPort))
-        if self.address.version == 6:
+        ipv6 = self.address.version == 6
+        if ipv6:
             family = socket.AF_INET6
+            anyAddr = "::"
         else:
             family = socket.AF_INET
+            anyAddr = "0.0.0.0"
         self.input = socket.socket(family, socket.SOCK_DGRAM)
         self.input.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.input.bind((self.address.compressed, self.destPort))
+        self.input.bind((anyAddr, self.destPort))
         self.input.settimeout(1.0)
-        # Although designed for multicast, can use localhost for testing
-        if self.address.is_multicast:
-            log.debug("Add membership for {}".format(self.address))
-            if self.address.version == 6:
-                ipv6_mreq = struct.pack('!16sI', self.address.packed, 0)
-                self.input.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_JOIN_GROUP, ipv6_mreq)
-            else:
-                ip_mreqn = struct.pack('!4sIH', self.address.packed, socket.INADDR_ANY, 0)
-                self.input.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, ip_mreqn)
+        log.debug("Add membership for {}".format(self.address))
+        if ipv6:
+            ipv6_mreq = struct.pack('!16sI', self.address.packed, 0)
+            self.input.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_JOIN_GROUP, ipv6_mreq)
+        else:
+            ip_mreqn = struct.pack('!4sIH', self.address.packed, socket.INADDR_ANY, 0)
+            self.input.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, ip_mreqn)
         # For sending
         log.debug("Create output socket for {} : {}".format(self.address, self.destPort))
         self.output = socket.socket(family, socket.SOCK_DGRAM)
         self.output.connect((self.address.compressed, self.destPort))
+        # May want to use specific interface
+        if self.iface is not None:
+            if ipv6:
+                self.input.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_MULTICAST_IF,
+                                        self.iface.packed)
+                self.output.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_MULTICAST_IF,
+                                        self.iface.packed)
+            else:
+                self.input.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_IF,
+                                        self.iface.packed)
+                self.output.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_IF,
+                                        self.iface.packed)
         # Want own source address for detecting loopbacks and name collisions,
         # but just address and port, no IPv6 flow and scope
         self.srcAddr = self.output.getsockname()[0:2]
+        log.debug("Source address on send {}".format(self.srcAddr))
         #
         log.debug("BasicChannel sockets created")
 
     def close(self):
         """Close channel"""
-        if self.address.is_multicast:
-            if self.address.version == 6:
-                ipv6_mreq = struct.pack('!16sI', self.address.packed, 0)
-                self.input.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_LEAVE_GROUP, ipv6_mreq)
-            else:
-                ip_mreqn = struct.pack('!4sIH', self.address.packed, socket.INADDR_ANY, 0)
-                self.input.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, ip_mreqn)
+        if self.address.version == 6:
+            ipv6_mreq = struct.pack('!16sI', self.address.packed, 0)
+            self.input.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_LEAVE_GROUP, ipv6_mreq)
+        else:
+            ip_mreqn = struct.pack('!4sIH', self.address.packed, socket.INADDR_ANY, 0)
+            self.input.setsockopt(socket.IPPROTO_IP, socket.IP_DROP_MEMBERSHIP, ip_mreqn)
         self.input.close()
         self.output.close()
         log.debug("Closed channel")
